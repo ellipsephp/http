@@ -28,7 +28,8 @@
         "zendframework/zend-diactoros": "^1.6",
         "willdurand/negotiation": "^2.3",
         "league/plates": "^3.3",
-        "ellipse/dispatcher": "^1.2"
+        "ellipse/dispatcher": "^1.2",
+        "ellipse/exceptions": "^0.1.0"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0",

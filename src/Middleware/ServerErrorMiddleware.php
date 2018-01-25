@@ -4,6 +4,7 @@ namespace Ellipse\Http\Middleware;
 
 use Throwable;
 
+use Ellipse\Exceptions\ExceptionHandlerMiddleware;
 use Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory;
 
 class ServerErrorMiddleware extends ExceptionHandlerMiddleware

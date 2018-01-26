@@ -10,7 +10,7 @@ use Interop\Container\ServiceProviderInterface;
 
 use Ellipse\DispatcherFactory;
 use Ellipse\DispatcherFactoryInterface;
-use Ellipse\Http\Handlers\DefaultHttpRequestHandler;
+use Ellipse\Http\Handlers\DefaultRequestHandler;
 
 class HttpServiceProvider implements ServiceProviderInterface
 {
@@ -87,7 +87,7 @@ class HttpServiceProvider implements ServiceProviderInterface
     {
         if (is_null($handler)) {
 
-            return new DefaultHttpRequestHandler;
+            return new DefaultRequestHandler;
 
         }
 

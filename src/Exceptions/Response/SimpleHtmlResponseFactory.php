@@ -24,7 +24,9 @@ class SimpleHtmlResponseFactory
      */
     public function __construct()
     {
-        $this->engine = new Engine(__DIR__ . '/templates');
+        $root = realpath(__DIR__ . '/../../..');
+
+        $this->engine = new Engine($root . '/templates');
     }
 
     /**

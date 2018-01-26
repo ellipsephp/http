@@ -1,18 +1,17 @@
 <?php declare(strict_types=1);
 
-namespace Ellipse\Http\Exceptions\Response;
+namespace Ellipse\Http\Handlers;
 
-use Throwable;
-
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
+
+use Psr\Http\Server\RequestHandlerInterface;
 
 use League\Plates\Engine;
 
 use Zend\Diactoros\Response\HtmlResponse;
 
-use Ellipse\Http\Exceptions\Inspector;
-
-class DetailledHtmlResponseFactory
+class DefaultRequestHandler implements RequestHandlerInterface
 {
     /**
      * the plates templating engine used to render the templates.
@@ -26,23 +25,21 @@ class DetailledHtmlResponseFactory
      */
     public function __construct()
     {
-        $root = realpath(__DIR__ . '/../../..');
+        $root = realpath(__DIR__ . '/../..');
 
         $this->engine = new Engine($root . '/templates');
     }
 
     /**
-     * Return a detailled html response for the given exception.
+     * Return a default response when nothing returned a response.
      *
-     * @param \Throwable $e
+     * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface
      */
-    public function response(Throwable $e): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->engine->render('detailled', [
-            'details' => new Inspector($e),
-        ]);
+        $html = $this->engine->render('default');
 
-        return new HtmlResponse($html, 500);
+        return new HtmlResponse($html);
     }
 }

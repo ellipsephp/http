@@ -10,6 +10,12 @@ use Zend\Diactoros\Response\JsonResponse;
 
 class SimpleJsonResponseFactory
 {
+    /**
+     * Return a simple json response for the given exception.
+     *
+     * @param \Throwable $e
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function response(Throwable $e): ResponseInterface
     {
         return new JsonResponse(['message' => 'Server error'], 500);

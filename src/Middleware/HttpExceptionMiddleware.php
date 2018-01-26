@@ -13,6 +13,14 @@ use Ellipse\Http\Exceptions\HttpException;
 
 class HttpExceptionMiddleware implements MiddlewareInterface
 {
+    /**
+     * Proxy the given handler and wrap any exception in a http exception.
+     *
+     * @param \Psr\Http\Message\ServerRequestInterface  $request
+     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
+     * @return \Psr\Http\Message\ResponseInterface
+     * @throws \Ellipse\Http\Exceptions\HttpException
+     */
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         try {

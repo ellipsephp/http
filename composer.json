@@ -29,7 +29,7 @@
         "willdurand/negotiation": "^2.3",
         "league/plates": "^3.3",
         "ellipse/dispatcher": "^1.2",
-        "ellipse/exceptions": "^0.1.0"
+        "ellipse/exceptions": "^0.2.0"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0",

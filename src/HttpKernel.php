@@ -9,6 +9,13 @@ use Ellipse\Http\Middleware\HttpExceptionMiddleware;
 
 class HttpKernel Extends AbstractHttpKernel
 {
+    /**
+     * Set up a http kernel with the given request handler wrapped inside a http
+     * exception middleware.
+     *
+     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
+     * @param bool                                      $debug
+     */
     public function __construct(RequestHandlerInterface $handler, bool $debug)
     {
         parent::__construct(new Dispatcher($handler, [

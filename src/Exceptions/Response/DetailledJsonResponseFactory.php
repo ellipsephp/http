@@ -8,13 +8,19 @@ use Psr\Http\Message\ResponseInterface;
 
 use Zend\Diactoros\Response\JsonResponse;
 
-use Ellipse\Http\Exceptions\ExceptionDetails;
+use Ellipse\Http\Exceptions\Inspector;
 
 class DetailledJsonResponseFactory
 {
+    /**
+     * Return a detailled json response for the given exception.
+     *
+     * @param \Throwable $e
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function response(Throwable $e): ResponseInterface
     {
-        $details = new ExceptionDetails($e);
+        $details = new Inspector($e);
 
         return new JsonResponse([
             'type' => get_class($details->inner()),

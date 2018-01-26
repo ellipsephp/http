@@ -10,6 +10,13 @@ use Ellipse\Http\Exceptions\Response\DefaultRequestBasedResponseFactory;
 
 abstract class AbstractHttpKernel extends Dispatcher
 {
+    /**
+     * Set up a http kernel with the given request handler wrapped inside a
+     * server error middleware.
+     *
+     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
+     * @param bool                                      $debug
+     */
     public function __construct(RequestHandlerInterface $handler, bool $debug)
     {
         parent::__construct($handler, [

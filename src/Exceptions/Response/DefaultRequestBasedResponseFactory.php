@@ -2,13 +2,13 @@
 
 namespace Ellipse\Http\Exceptions\Response;
 
-use Throwable;
-
-use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
-
 class DefaultRequestBasedResponseFactory extends RequestBasedResponseFactory
 {
+    /**
+     * Set up a request based response factory with default factories.
+     *
+     * @param bool $debug
+     */
     public function __construct(bool $debug)
     {
         $html = $debug ? new DetailledHtmlResponseFactory : new SimpleHtmlResponseFactory;

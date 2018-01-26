@@ -12,13 +12,27 @@ use Zend\Diactoros\Response\HtmlResponse;
 
 class SimpleHtmlResponseFactory
 {
+    /**
+     * the plates templating engine used to render the templates.
+     *
+     * @var \League\Plates\Engine
+     */
     private $engine;
 
+    /**
+     * Set up a simple html response factory.
+     */
     public function __construct()
     {
         $this->engine = new Engine(__DIR__ . '/templates');
     }
 
+    /**
+     * Return a simple html response for the given exception.
+     *
+     * @param \Throwable $e
+     * @return \Psr\Http\Message\ResponseInterface
+     */
     public function response(Throwable $e): ResponseInterface
     {
         $html = $this->engine->render('simple');

@@ -3,6 +3,7 @@
 namespace Ellipse\Http;
 
 use Psr\Container\ContainerInterface;
+
 use Psr\Http\Server\RequestHandlerInterface;
 
 use Interop\Container\ServiceProviderInterface;
@@ -78,7 +79,7 @@ class HttpServiceProvider implements ServiceProviderInterface
     /**
      * Return a default request handler when none is defined.
      *
-     * @param \Psr\Container\ContainerInterface             $container
+     * @param \Psr\Container\ContainerInterface         $container
      * @param \Psr\Http\Server\RequestHandlerInterface  $handler
      * @return \Psr\Http\Server\RequestHandlerInterface
      */

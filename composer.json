@@ -22,18 +22,22 @@
     ],
     "require": {
         "php": ">=7.1",
+        "psr/container": "^1.0",
         "psr/http-message": "^1.0",
         "psr/http-server-handler": "^1.0",
         "psr/http-server-middleware": "^1.0",
+        "container-interop/service-provider": "^0.4.0",
         "zendframework/zend-diactoros": "^1.6",
         "willdurand/negotiation": "^2.3",
         "league/plates": "^3.3",
+        "ellipse/providers": "^0.1.0",
         "ellipse/dispatcher": "^1.2",
         "ellipse/exceptions": "^0.2.0"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0",
-        "eloquent/phony-kahlan": "^1.0"
+        "eloquent/phony-kahlan": "^1.0",
+        "ellipse/container": "^0.4.4"
     },
     "autoload": {
         "psr-4": {

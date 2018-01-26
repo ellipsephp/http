@@ -12,7 +12,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 
 use Ellipse\Http\Exceptions\Inspector;
 
-class DetailledHtmlResponseFactory
+class DetailledHtmlResponseFactory implements ExceptionResponseFactoryInterface
 {
     /**
      * the plates templating engine used to render the templates.

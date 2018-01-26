@@ -10,7 +10,7 @@ use Zend\Diactoros\Response\JsonResponse;
 
 use Ellipse\Http\Exceptions\Inspector;
 
-class DetailledJsonResponseFactory
+class DetailledJsonResponseFactory implements ExceptionResponseFactoryInterface
 {
     /**
      * Return a detailled json response for the given exception.

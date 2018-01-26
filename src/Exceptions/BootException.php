@@ -3,9 +3,9 @@
 namespace Ellipse\Http\Exceptions;
 
 use Throwable;
-use Exception;
+use RuntimeException;
 
-class BootException extends Exception
+class BootException extends RuntimeException implements HttpExceptionInterface
 {
     public function __construct(Throwable $previous)
     {

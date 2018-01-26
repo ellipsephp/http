@@ -2,11 +2,11 @@
 
 namespace Ellipse\Http\Exceptions;
 
-use Exception;
+use TypeError;
 
 use Psr\Http\Server\RequestHandlerInterface;
 
-class HttpKernelTypeException extends Exception
+class HttpKernelTypeException extends TypeError implements HttpExceptionInterface
 {
     public function __construct($value)
     {

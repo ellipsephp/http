@@ -8,7 +8,7 @@ use Psr\Http\Message\ResponseInterface;
 
 use Zend\Diactoros\Response\JsonResponse;
 
-class SimpleJsonResponseFactory
+class SimpleJsonResponseFactory implements ExceptionResponseFactoryInterface
 {
     /**
      * Return a simple json response for the given exception.

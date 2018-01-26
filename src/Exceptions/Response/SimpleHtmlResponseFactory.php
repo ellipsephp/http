@@ -10,7 +10,7 @@ use League\Plates\Engine;
 
 use Zend\Diactoros\Response\HtmlResponse;
 
-class SimpleHtmlResponseFactory
+class SimpleHtmlResponseFactory implements ExceptionResponseFactoryInterface
 {
     /**
      * the plates templating engine used to render the templates.

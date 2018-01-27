@@ -1,6 +1,6 @@
 {
     "name": "ellipse/http",
-    "type": "ellipse-provider",
+    "type": "service-provider",
     "description": "Psr-15 based http kernel",
     "keywords": [
         "psr-15",
@@ -33,7 +33,7 @@
         "ellipse/providers": "^0.1.0",
         "ellipse/dispatcher": "^1.2",
         "ellipse/exceptions": "^0.2.0",
-        "ellipse/providers-installer-plugin": "^0.1.0"
+        "ellipse/providers-plugin": "^0.1.0"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0",

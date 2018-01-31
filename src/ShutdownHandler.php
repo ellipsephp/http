@@ -71,7 +71,7 @@ class ShutdownHandler
 
         if ($error) {
 
-            if ($error['type'] & $this->report > 0) {
+            if (($error['type'] & $this->report) > 0) {
 
                 $e = new FatalException(
                     new ErrorException(

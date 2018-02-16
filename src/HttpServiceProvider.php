@@ -17,7 +17,9 @@ class HttpServiceProvider implements ServiceProviderInterface
     public function getFactories()
     {
         return [
-            'app.http.kernel' => [$this, 'getHttpKernel'],
+            'ellipse.http.kernel' => [$this, 'getHttpKernel'],
+            'ellipse.http.middleware' => [$this, 'getMiddleware'],
+            'ellipse.http.handler' => [$this, 'getRequestHandler'],
         ];
     }
 
@@ -25,8 +27,6 @@ class HttpServiceProvider implements ServiceProviderInterface
     {
         return [
             DispatcherFactoryInterface::class => [$this, 'getDispatcherFactory'],
-            'app.http.middleware' => [$this, 'getMiddleware'],
-            'app.http.handler' => [$this, 'getRequestHandler'],
         ];
     }
 
@@ -40,10 +40,32 @@ class HttpServiceProvider implements ServiceProviderInterface
     public function getHttpKernel(ContainerInterface $container): RequestHandlerInterface
     {
         $factory = $container->get(DispatcherFactoryInterface::class);
-        $middleware = $container->get('app.http.middleware');
-        $handler = $container->get('app.http.handler');
+        $middleware = $container->get('ellipse.http.middleware');
+        $handler = $container->get('ellipse.http.handler');
 
         return $factory($handler, $middleware);
+    }
+
+    /**
+     * Return an empty array as middleware. End user can extend it.
+     *
+     * @param \Psr\Container\ContainerInterface $container
+     * @return iterable
+     */
+    public function getMiddleware(ContainerInterface $container): iterable
+    {
+        return [];
+    }
+
+    /**
+     * Return a default request handler. End user can extend it.
+     *
+     * @param \Psr\Container\ContainerInterface $container
+     * @return \Psr\Http\Server\RequestHandlerInterface
+     */
+    public function getRequestHandler(ContainerInterface $container): RequestHandlerInterface
+    {
+        return new DefaultRequestHandler;
     }
 
     /**
@@ -63,34 +85,4 @@ class HttpServiceProvider implements ServiceProviderInterface
 
         return $factory;
     }
-
-    /**
-     * Return an empty array as middleware when none defined.
-     *
-     * @param \Psr\Container\ContainerInterface $container
-     * @param iterable                          $middleware
-     * @return iterable
-     */
-    public function getMiddleware(ContainerInterface $container, iterable $middleware = []): iterable
-    {
-        return $middleware;
-     }
-
-    /**
-     * Return a default request handler when none is defined.
-     *
-     * @param \Psr\Container\ContainerInterface         $container
-     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
-     * @return \Psr\Http\Server\RequestHandlerInterface
-     */
-    public function getRequestHandler(ContainerInterface $container, RequestHandlerInterface $handler = null): RequestHandlerInterface
-    {
-        if (is_null($handler)) {
-
-            return new DefaultRequestHandler;
-
-        }
-
-        return $handler;
-     }
 }

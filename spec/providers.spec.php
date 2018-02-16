@@ -18,11 +18,27 @@ describe('providers.php', function () {
 
         });
 
-        it('should provide an instance of Dispatcher for the app.http.kernel alias', function () {
+        it('should provide an instance of Dispatcher for the ellipse.http.kernel alias', function () {
 
-            $test = $this->container->get('app.http.kernel');
+            $test = $this->container->get('ellipse.http.kernel');
 
             expect($test)->toBeAnInstanceOf(Dispatcher::class);
+
+        });
+
+        it('should provide an empty array for the ellipse.http.middleware alias', function () {
+
+            $test = $this->container->get('ellipse.http.middleware');
+
+            expect($test)->toEqual([]);
+
+        });
+
+        it('should provide an instance of DefaultRequestHandler for the ellipse.http.handler alias', function () {
+
+            $test = $this->container->get('ellipse.http.handler');
+
+            expect($test)->toBeAnInstanceOf(DefaultRequestHandler::class);
 
         });
 
@@ -31,22 +47,6 @@ describe('providers.php', function () {
             $test = $this->container->get(DispatcherFactoryInterface::class);
 
             expect($test)->toBeAnInstanceOf(DispatcherFactory::class);
-
-        });
-
-        it('should provide an empty array for the app.http.middleware alias', function () {
-
-            $test = $this->container->get('app.http.middleware');
-
-            expect($test)->toEqual([]);
-
-        });
-
-        it('should provide an instance of DefaultRequestHandler for the app.http.handler alias', function () {
-
-            $test = $this->container->get('app.http.handler');
-
-            expect($test)->toBeAnInstanceOf(DefaultRequestHandler::class);
 
         });
 

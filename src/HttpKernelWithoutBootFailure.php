@@ -5,21 +5,19 @@ namespace Ellipse\Http;
 use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher;
-use Ellipse\Http\Middleware\ServerErrorMiddleware;
+use Ellipse\Http\Middleware\HttpExceptionMiddleware;
 
-class HttpKernel extends Dispatcher
+class HttpKernelWithoutBootFailure extends HttpKernel
 {
     /**
-     * Set up a http kernel with the given request handler wrapped inside a
-     * server error middleware.
+     * Set up a http kernel with the given request handler wrapped inside a http
+     * exception middleware.
      *
      * @param \Psr\Http\Server\RequestHandlerInterface  $handler
      * @param bool                                      $debug
      */
     public function __construct(RequestHandlerInterface $handler, bool $debug)
     {
-        $path = realpath(__DIR__ . '/../templates');
-
-        parent::__construct($handler, [new ServerErrorMiddleware($path, $debug)]);
+        parent::__construct(new Dispatcher($handler, [new HttpExceptionMiddleware]), $debug);
     }
 }

@@ -1,20 +1,20 @@
 <?php
 
 use function Eloquent\Phony\Kahlan\mock;
+use function Eloquent\Phony\Kahlan\stub;
 
 use Psr\Http\Message\ServerRequestInterface;
 
 use Ellipse\Http\ShutdownHandler;
-use Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory;
 
 describe('ShutdownHandler', function () {
 
     beforeEach(function () {
 
         $this->request = mock(ServerRequestInterface::class)->get();
-        $this->factory = mock(RequestBasedResponseFactory::class);
+        $this->factory = stub();
 
-        $this->handler = new ShutdownHandler($this->request, $this->factory->get());
+        $this->handler = new ShutdownHandler($this->request, $this->factory);
 
     });
 

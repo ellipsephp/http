@@ -5,18 +5,19 @@ namespace Ellipse\Http\Middleware;
 use Throwable;
 
 use Ellipse\Exceptions\ExceptionHandlerMiddleware;
-use Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory;
+use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
 
 class ServerErrorMiddleware extends ExceptionHandlerMiddleware
 {
     /**
      * Set up an exception handler middleware catching all errors and producing
-     * a response with the given response factory.
+     * a response with a server error request handler.
      *
-     * @param \Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory $factory
+     * @param string    $path
+     * @param bool      $debug
      */
-    public function __construct(RequestBasedResponseFactory $factory)
+    public function __construct(string $path, bool $debug)
     {
-        parent::__construct(Throwable::class, [$factory, 'response']);
+        parent::__construct(Throwable::class, new ExceptionRequestHandlerFactory($path, $debug));
     }
 }

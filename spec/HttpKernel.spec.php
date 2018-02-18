@@ -7,7 +7,6 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher;
-use Ellipse\Http\AbstractHttpKernel;
 use Ellipse\Http\HttpKernel;
 
 describe('HttpKernel', function () {
@@ -23,14 +22,6 @@ describe('HttpKernel', function () {
         $test = new HttpKernel($this->handler->get(), true);
 
         expect($test)->toBeAnInstanceOf(Dispatcher::class);
-
-    });
-
-    it('should extend AbstractHttpKernel', function () {
-
-        $test = new HttpKernel($this->handler->get(), true);
-
-        expect($test)->toBeAnInstanceOf(AbstractHttpKernel::class);
 
     });
 
@@ -69,39 +60,40 @@ describe('HttpKernel', function () {
 
                 beforeEach(function () {
 
-                    $this->exception = mock(Throwable::class)->get();
+                    $this->exception = new Exception('Exception message');
 
+                    $this->request->getServerParams->returns([]);
                     $this->handler->handle->with($this->request)->throws($this->exception);
 
                 });
 
-                context('when the request accept html contents', function () {
-
-                    it('should return a simple html response', function () {
-
-                        $this->request->getHeaderLine->with('Accept', '*')->returns('text/html');
-
-                        $test = $this->kernel->handle($this->request->get());
-
-                        expect($test->getStatusCode())->toEqual(500);
-                        expect($test->getHeaderLine('Content-type'))->toContain('text/html');
-                        expect((string) $test->getBody())->toContain('Server error');
-
-                    });
-
-                });
-
-                context('when the request accept json contents', function () {
+                context('when the request accepts json contents', function () {
 
                     it('should return a simple json response', function () {
 
-                        $this->request->getHeaderLine->with('Accept', '*')->returns('application/json');
+                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
 
                         $test = $this->kernel->handle($this->request->get());
 
                         expect($test->getStatusCode())->toEqual(500);
                         expect($test->getHeaderLine('Content-type'))->toContain('application/json');
                         expect(json_decode((string) $test->getBody(), true))->toContain('Server error');
+
+                    });
+
+                });
+
+                context('when the request does not accept json contents', function () {
+
+                    it('should return a simple html response', function () {
+
+                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
+
+                        $test = $this->kernel->handle($this->request->get());
+
+                        expect($test->getStatusCode())->toEqual(500);
+                        expect($test->getHeaderLine('Content-type'))->toContain('text/html');
+                        expect((string) $test->getBody())->toContain('Server error');
 
                     });
 
@@ -137,41 +129,42 @@ describe('HttpKernel', function () {
 
                 beforeEach(function () {
 
-                    $this->exception = mock(Throwable::class)->get();
+                    $this->exception = new Exception('Exception message');
 
+                    $this->request->getServerParams->returns([]);
                     $this->handler->handle->with($this->request)->throws($this->exception);
 
                 });
 
-                context('when the request accept html contents', function () {
-
-                    it('should return a detailled html response', function () {
-
-                        $this->request->getHeaderLine->with('Accept', '*')->returns('text/html');
-
-                        $test = $this->kernel->handle($this->request->get());
-
-                        expect($test->getStatusCode())->toEqual(500);
-                        expect($test->getHeaderLine('Content-type'))->toContain('text/html');
-                        expect((string) $test->getBody())->toContain(get_class($this->exception));
-                        expect((string) $test->getBody())->toContain('Uncaught exception while processing the http request');
-
-                    });
-
-                });
-
-                context('when the request accept json contents', function () {
+                context('when the request accepts json contents', function () {
 
                     it('should return a detailled json response', function () {
 
-                        $this->request->getHeaderLine->with('Accept', '*')->returns('application/json');
+                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
 
                         $test = $this->kernel->handle($this->request->get());
 
                         expect($test->getStatusCode())->toEqual(500);
                         expect($test->getHeaderLine('Content-type'))->toContain('application/json');
                         expect(json_decode((string) $test->getBody(), true))->toContain(get_class($this->exception));
-                        expect(json_decode((string) $test->getBody(), true)['context'])->toContain('Uncaught exception while processing the http request');
+                        expect(json_decode((string) $test->getBody(), true)['context'])->toContain('Exception message');
+
+                    });
+
+                });
+
+                context('when the request does not accept json contents', function () {
+
+                    it('should return a detailled html response', function () {
+
+                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
+
+                        $test = $this->kernel->handle($this->request->get());
+
+                        expect($test->getStatusCode())->toEqual(500);
+                        expect($test->getHeaderLine('Content-type'))->toContain('text/html');
+                        expect((string) $test->getBody())->toContain(get_class($this->exception));
+                        expect((string) $test->getBody())->toContain('Exception message');
 
                     });
 

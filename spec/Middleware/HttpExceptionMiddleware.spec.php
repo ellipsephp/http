@@ -52,7 +52,7 @@ describe('HttpExceptionMiddleware', function () {
 
             it('should propagate the exception wrapped inside a HttpException', function () {
 
-                $exception = new Exception;
+                $exception = mock(Throwable::class)->get();
 
                 $this->handler->handle->with($this->request)->throws($exception);
 

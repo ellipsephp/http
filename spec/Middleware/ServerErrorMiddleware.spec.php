@@ -4,25 +4,22 @@ use function Eloquent\Phony\Kahlan\mock;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Ellipse\Exceptions\ExceptionHandlerMiddleware;
 use Ellipse\Http\Middleware\ServerErrorMiddleware;
-use Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory;
 
 describe('ServerErrorMiddleware', function () {
 
     beforeEach(function () {
 
-        $this->factory = mock(RequestBasedResponseFactory::class);
-
-        $this->middleware = new ServerErrorMiddleware($this->factory->get());
+        $this->middleware = new ServerErrorMiddleware('templates', false);
 
     });
 
-    it('should implement MiddlewareInterface', function () {
+    it('should extend ExceptionHandlerMiddleware', function () {
 
-        expect($this->middleware)->toBeAnInstanceOf(MiddlewareInterface::class);
+        expect($this->middleware)->toBeAnInstanceOf(ExceptionHandlerMiddleware::class);
 
     });
 
@@ -30,7 +27,7 @@ describe('ServerErrorMiddleware', function () {
 
         beforeEach(function () {
 
-            $this->request = mock(ServerRequestInterface::class)->get();
+            $this->request = mock(ServerRequestInterface::class);
             $this->response = mock(ResponseInterface::class)->get();
             $this->handler = mock(RequestHandlerInterface::class);
 
@@ -42,7 +39,7 @@ describe('ServerErrorMiddleware', function () {
 
                 $this->handler->handle->with($this->request)->returns($this->response);
 
-                $test = $this->middleware->process($this->request, $this->handler->get());
+                $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                 expect($test)->toBe($this->response);
 
@@ -52,17 +49,18 @@ describe('ServerErrorMiddleware', function () {
 
         context('when the handler ->handle() method throws an exception', function () {
 
-            it('should use the response factory ->response() method to produce a response for the exception', function () {
+            it('should return a response with 500 status code', function () {
 
-                $exception = new Exception;
+                $exception = mock(Throwable::class)->get();
+
+                $this->request->getServerParams->returns([]);
+                $this->request->getHeaderLine->returns('*/*');
 
                 $this->handler->handle->with($this->request)->throws($exception);
 
-                $this->factory->response->with($this->request, $exception)->returns($this->response);
+                $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
-                $test = $this->middleware->process($this->request, $this->handler->get());
-
-                expect($test)->toBe($this->response);
+                expect($test->getStatusCode())->toEqual(500);
 
             });
 

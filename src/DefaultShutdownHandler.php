@@ -4,7 +4,7 @@ namespace Ellipse\Http;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Ellipse\Http\Exceptions\Response\DefaultRequestBasedResponseFactory;
+use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
 
 class DefaultShutdownHandler extends ShutdownHandler
 {
@@ -17,6 +17,8 @@ class DefaultShutdownHandler extends ShutdownHandler
      */
     public function __construct(ServerRequestInterface $request, bool $debug)
     {
-        parent::__construct($request, new DefaultRequestBasedResponseFactory($debug));
+        $path = realpath(__DIR__ . '/../templates');
+
+        parent::__construct($request, new ExceptionRequestHandlerFactory($path, $debug));
     }
 }

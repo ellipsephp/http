@@ -3,12 +3,11 @@
 use function Eloquent\Phony\Kahlan\stub;
 use function Eloquent\Phony\Kahlan\mock;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Http\HttpKernel;
-use Ellipse\Http\HttpKernelWithBootFailure;
 use Ellipse\Http\HttpKernelFactory;
+use Ellipse\Http\HttpKernelWithoutBootFailure;
+use Ellipse\Http\HttpKernelWithBootFailure;
 use Ellipse\Http\Exceptions\HttpKernelTypeException;
 
 describe('HttpKernelFactory', function () {
@@ -33,11 +32,11 @@ describe('HttpKernelFactory', function () {
 
                         $handler = mock(RequestHandlerInterface::class)->get();
 
-                        $this->delegate->with('env', true, '/root')->returns($handler);
+                        $this->delegate->with('env', true)->returns($handler);
 
-                        $test = ($this->factory)('env', true, '/root');
+                        $test = ($this->factory)('env', true);
 
-                        $kernel = new HttpKernel($handler, true);
+                        $kernel = new HttpKernelWithoutBootFailure($handler, true);
 
                         expect($test)->toEqual($kernel);
 
@@ -51,11 +50,11 @@ describe('HttpKernelFactory', function () {
 
                         $handler = mock(RequestHandlerInterface::class)->get();
 
-                        $this->delegate->with('env', false, '/root')->returns($handler);
+                        $this->delegate->with('env', false)->returns($handler);
 
-                        $test = ($this->factory)('env', false, '/root');
+                        $test = ($this->factory)('env', false);
 
-                        $kernel = new HttpKernel($handler, false);
+                        $kernel = new HttpKernelWithoutBootFailure($handler, false);
 
                         expect($test)->toEqual($kernel);
 
@@ -69,24 +68,23 @@ describe('HttpKernelFactory', function () {
 
                 beforeEach(function () {
 
-                    $this->request = mock(ServerRequestInterface::class);
+                    $this->exception = new HttpKernelTypeException('handler');
 
-                    $this->request->getHeaderLine->with('Accept', '*')->returns('text/html');
+                    allow(HttpKernelTypeException::class)->toBe($this->exception);
 
                 });
 
                 context('when the debug value is set to true', function () {
 
-                    it('should return a http kernel with boot failure with the debug value set to true', function () {
+                    it('should return a http kernel with boot failure with a HttpKernelTypeException and the debug value set to true', function () {
 
-                        $message = (new HttpKernelTypeException('handler'))->getMessage();
+                        $this->delegate->with('env', true)->returns('handler');
 
-                        $this->delegate->with('env', true, '/root')->returns('handler');
+                        $test = ($this->factory)('env', true);
 
-                        $test = ($this->factory)('env', true, '/root');
+                        $kernel = new HttpKernelWithBootFailure($this->exception, true);
 
-                        expect($test)->toBeAnInstanceOf(HttpKernelWithBootFailure::class);
-                        expect((string) $test->handle($this->request->get())->getBody())->toContain($message);
+                        expect($test)->toEqual($kernel);
 
                     });
 
@@ -94,14 +92,15 @@ describe('HttpKernelFactory', function () {
 
                 context('when the debug value is set to false', function () {
 
-                    it('should return a http kernel with boot failure with the debug value set to false', function () {
+                    it('should return a http kernel with boot failure with a HttpKernelTypeException and the debug value set to false', function () {
 
-                        $this->delegate->with('env', false, '/root')->returns('handler');
+                        $this->delegate->with('env', false)->returns('handler');
 
-                        $test = ($this->factory)('env', false, '/root');
+                        $test = ($this->factory)('env', false);
 
-                        expect($test)->toBeAnInstanceOf(HttpKernelWithBootFailure::class);
-                        expect((string) $test->handle($this->request->get())->getBody())->toContain('Server error');
+                        $kernel = new HttpKernelWithBootFailure($this->exception, false);
+
+                        expect($test)->toEqual($kernel);
 
                     });
 
@@ -113,28 +112,19 @@ describe('HttpKernelFactory', function () {
 
         context('when the delegate throws an exception', function () {
 
-            beforeEach(function () {
-
-                $this->request = mock(ServerRequestInterface::class);
-
-                $this->request->getHeaderLine->with('Accept', '*')->returns('text/html');
-
-            });
-
             context('when the debug value is set to true', function () {
 
-                it('should return a http kernel with boot failure with the debug value set to true', function () {
+                it('should return a http kernel with boot failure with the exception and the debug value set to true', function () {
 
-                    $message = 'the exception message';
+                    $exception = mock(Throwable::class)->get();
 
-                    $exception = new Exception($message);
+                    $this->delegate->with('env', true)->throws($exception);
 
-                    $this->delegate->with('env', true, '/root')->throws($exception);
+                    $test = ($this->factory)('env', true);
 
-                    $test = ($this->factory)('env', true, '/root');
+                    $kernel = new HttpKernelWithBootFailure($exception, true);
 
                     expect($test)->toBeAnInstanceOf(HttpKernelWithBootFailure::class);
-                    expect((string) $test->handle($this->request->get())->getBody())->toContain($message);
 
                 });
 
@@ -142,16 +132,17 @@ describe('HttpKernelFactory', function () {
 
             context('when the debug value is set to false', function () {
 
-                it('should return a http kernel with boot failure with the debug value set to false', function () {
+                it('should return a http kernel with boot failure with the exception and the debug value set to false', function () {
 
-                    $exception = new Exception('the exception message');
+                    $exception = mock(Throwable::class)->get();
 
-                    $this->delegate->with('env', false, '/root')->throws($exception);
+                    $this->delegate->with('env', false)->throws($exception);
 
-                    $test = ($this->factory)('env', false, '/root');
+                    $test = ($this->factory)('env', false);
 
-                    expect($test)->toBeAnInstanceOf(HttpKernelWithBootFailure::class);
-                    expect((string) $test->handle($this->request->get())->getBody())->toContain('Server error');
+                    $kernel = new HttpKernelWithBootFailure($exception, false);
+
+                    expect($test)->toEqual($kernel);
 
                 });
 

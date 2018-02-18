@@ -29,14 +29,15 @@ class ShutdownHandler
     private $request;
 
     /**
-     * The response factory used to render a page for the error.
+     * The exception request handler factory producing a request handler.
      *
-     * @var \Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory
+     * @var callable
      */
     private $factory;
 
     /**
-     * Set up a shutdown handler with the given request and response factory.
+     * Set up a shutdown handler with the given request and request handler
+     * factory.
      *
      * Set the error to report as the intersection between the error which can
      * be reported by this object and the configured error reporting value.
@@ -44,10 +45,10 @@ class ShutdownHandler
      * Then update the error reporting value so the error set to be reported by
      * this object at the previous step are silenced by php.
      *
-     * @param \Psr\Http\Message\ServerRequestInterface                      $request
-     * @param \Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory $factory
+     * @param \Psr\Http\Message\ServerRequestInterface  $request
+     * @param callable                                  $factory
      */
-    public function __construct(ServerRequestInterface $request, RequestBasedResponseFactory $factory)
+    public function __construct(ServerRequestInterface $request, callable $factory)
     {
         $this->request = $request;
         $this->factory = $factory;
@@ -83,7 +84,7 @@ class ShutdownHandler
                     )
                 );
 
-                $response = $this->factory->response($this->request, $e);
+                $response = ($this->factory)($e)->handle($this->request);
 
                 send($response);
 

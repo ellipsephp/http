@@ -32,23 +32,21 @@ class HttpKernelFactory
     /**
      * Proxy the delegate and wrap the produced request handler inside a http
      * kernel. When an exception is thrown by the deletate, return a http kernel
-     * with boot failure. This way an http kernel is always returned.
+     * with boot failure so an http kernel is always returned.
      *
      * @param string    $env
      * @param bool      $debug
-     * @param string    $root
-     * @return \Ellipse\Http\AbstractHttpKernel
+     * @return \Ellipse\Http\HttpKernel
      */
-    public function __invoke(string $env, bool $debug, string $root): AbstractHttpKernel
+    public function __invoke(string $env, bool $debug): HttpKernel
     {
-        // get to get the http kernel from the delegate
         try {
 
-            $kernel = ($this->delegate)($env, $debug, $root);
+            $kernel = ($this->delegate)($env, $debug);
 
             if ($kernel instanceof RequestHandlerInterface) {
 
-                return new HttpKernel($kernel, $debug);
+                return new HttpKernelWithoutBootFailure($kernel, $debug);
 
             }
 
@@ -56,7 +54,6 @@ class HttpKernelFactory
 
         }
 
-        // display the boot error when something goes wrong
         catch (Throwable $e) {
 
             return new HttpKernelWithBootFailure($e, $debug);

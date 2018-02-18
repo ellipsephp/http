@@ -6,13 +6,12 @@ use Throwable;
 
 use Ellipse\Http\Handlers\BootExceptionRequestHandler;
 
-class HttpKernelWithBootFailure Extends AbstractHttpKernel
+class HttpKernelWithBootFailure extends HttpKernel
 {
     /**
-     * Set up a http kernel with a boot exception request handler wrapped around
-     * the given exception.
+     * Set up a http kernel with a boot exception request handler.
      *
-     * @param \Throwable    $handler
+     * @param \Throwable    $e
      * @param bool          $debug
      */
     public function __construct(Throwable $e, bool $debug)

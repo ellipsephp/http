@@ -4,23 +4,11 @@ namespace Ellipse\Http\Handlers;
 
 use Throwable;
 
-use Psr\Http\Server\RequestHandlerInterface;
-
 use Negotiation\Negotiator;
 use League\Plates\Engine;
 
-use Ellipse\Http\Middleware\JsonHandlerMiddleware;
-use Ellipse\Dispatcher\RequestHandlerWithMiddleware;
-
 class ExceptionRequestHandlerFactory
 {
-    /**
-     * The templates path.
-     *
-     * @var string
-     */
-    private $path;
-
     /**
      * Whether the application is in debug mode or not.
      *
@@ -29,15 +17,12 @@ class ExceptionRequestHandlerFactory
     private $debug;
 
     /**
-     * Set up an exeception request handler factory with the given templates
-     * path and debug status.
+     * Set up an exeception request handler factory with the given debug status.
      *
-     * @param string    $path
-     * @param bool      $debug
+     * @param bool $debug
      */
-    public function __construct(string $path, bool $debug)
+    public function __construct(bool $debug)
     {
-        $this->path = $path;
         $this->debug = $debug;
     }
 
@@ -46,25 +31,12 @@ class ExceptionRequestHandlerFactory
      * exception.
      *
      * @param \Throwable $e
-     * @return \Psr\Http\Server\RequestHandlerInterface;
+     * @return \Ellipse\Http\Handlers\ExceptionRequestHandler;
      */
-    public function __invoke(Throwable $e): RequestHandlerInterface
+    public function __invoke(Throwable $e): ExceptionRequestHandler
     {
         $negotiator = new Negotiator;
-        $priorities = ['text/html', 'application/json'];
 
-        $engine = new Engine($this->path);
-
-        $json = $this->debug
-            ? new DetailledJsonExceptionRequestHandler($e)
-            : new SimpleJsonExceptionRequestHandler;
-
-        $html = $this->debug
-            ? new DetailledHtmlExceptionRequestHandler($engine, $e)
-            : new SimpleHtmlExceptionRequestHandler($engine);
-
-        return new RequestHandlerWithMiddleware($html,
-            new JsonHandlerMiddleware($negotiator, $priorities, $json)
-        );
+        return new ExceptionRequestHandler($e, $negotiator, $this->debug);
     }
 }

@@ -3,45 +3,30 @@
 use function Eloquent\Phony\Kahlan\mock;
 
 use Negotiation\Negotiator;
-use League\Plates\Engine;
 
-use Ellipse\Dispatcher\RequestHandlerWithMiddleware;
-use Ellipse\Http\Middleware\JsonHandlerMiddleware;
+use Ellipse\Http\Handlers\ExceptionRequestHandler;
 use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
-use Ellipse\Http\Handlers\SimpleHtmlExceptionRequestHandler;
-use Ellipse\Http\Handlers\SimpleJsonExceptionRequestHandler;
-use Ellipse\Http\Handlers\DetailledHtmlExceptionRequestHandler;
-use Ellipse\Http\Handlers\DetailledJsonExceptionRequestHandler;
 
 describe('ExceptionRequestHandlerFactory', function () {
 
     beforeEach(function () {
 
-        $this->negotiator = new Negotiator;
-        $this->priorities = ['text/html', 'application/json'];
-        $this->engine = new Engine('templates');
         $this->exception = mock(Throwable::class)->get();
+        $this->negotiator = new Negotiator;
 
     });
 
     describe('->__invoke()', function () {
 
-        context('when the debug value is set to false', function () {
+        context('when debug option is set to false', function () {
 
-            it('should return a request handler producing simple response', function () {
+            it('should return an exception request handler with debug value set to false', function () {
 
-                $factory = new ExceptionRequestHandlerFactory('templates', false);
+                $factory = new ExceptionRequestHandlerFactory(false);
 
                 $test = $factory($this->exception);
 
-                $handler = new RequestHandlerWithMiddleware(
-                    new SimpleHtmlExceptionRequestHandler($this->engine),
-                    new JsonHandlerMiddleware(
-                        $this->negotiator,
-                        $this->priorities,
-                        new SimpleJsonExceptionRequestHandler
-                    )
-                );
+                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, false);
 
                 expect($test)->toEqual($handler);
 
@@ -49,22 +34,15 @@ describe('ExceptionRequestHandlerFactory', function () {
 
         });
 
-        context('when the debug value is set to true', function () {
+        context('when debug option is set to true', function () {
 
-            it('should return a request handler producing detailled response', function () {
+            it('should return an exception request handler with debug value set to true', function () {
 
-                $factory = new ExceptionRequestHandlerFactory('templates', true);
+                $factory = new ExceptionRequestHandlerFactory(true);
 
                 $test = $factory($this->exception);
 
-                $handler = new RequestHandlerWithMiddleware(
-                    new DetailledHtmlExceptionRequestHandler($this->engine, $this->exception),
-                    new JsonHandlerMiddleware(
-                        $this->negotiator,
-                        $this->priorities,
-                        new DetailledJsonExceptionRequestHandler($this->exception)
-                    )
-                );
+                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, true);
 
                 expect($test)->toEqual($handler);
 

@@ -5,8 +5,6 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use League\Plates\Engine;
-
 use Ellipse\Http\Exceptions\Inspector;
 use Ellipse\Http\Handlers\DetailledHtmlExceptionRequestHandler;
 
@@ -14,10 +12,9 @@ describe('DetailledHtmlExceptionRequestHandler', function () {
 
     beforeEach(function () {
 
-        $this->engine = mock(Engine::class);
         $this->exception = mock(Throwable::class)->get();
 
-        $this->handler = new DetailledHtmlExceptionRequestHandler($this->engine->get(), $this->exception);
+        $this->handler = new DetailledHtmlExceptionRequestHandler($this->exception);
 
     });
 
@@ -29,23 +26,15 @@ describe('DetailledHtmlExceptionRequestHandler', function () {
 
     describe('->handle()', function () {
 
-        beforeEach(function () {
-
-            $this->request = mock(ServerRequestInterface::class)->get();
-
-        });
-
         it('should return a detailled html response', function () {
 
-            $details = new Inspector($this->exception);
+            $request = mock(ServerRequestInterface::class)->get();
 
-            $this->engine->render->with('detailled', ['details' => $details])->returns('contents');
-
-            $test = $this->handler->handle($this->request);
+            $test = $this->handler->handle($request);
 
             expect($test->getStatusCode())->toEqual(500);
             expect($test->getHeaderLine('Content-type'))->toContain('text/html');
-            expect((string) $test->getBody())->toContain('contents');
+            expect((string) $test->getBody())->toContain(get_class($this->exception));
 
         });
 

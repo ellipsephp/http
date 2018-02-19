@@ -23,15 +23,11 @@ describe('SimpleJsonExceptionRequestHandler', function () {
 
     describe('->handle()', function () {
 
-        beforeEach(function () {
-
-            $this->request = mock(ServerRequestInterface::class)->get();
-
-        });
-
         it('should return a detailled html response', function () {
 
-            $test = $this->handler->handle($this->request);
+            $request = mock(ServerRequestInterface::class)->get();
+
+            $test = $this->handler->handle($request);
 
             expect($test->getStatusCode())->toEqual(500);
             expect($test->getHeaderLine('Content-type'))->toContain('application/json');

@@ -8,6 +8,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Http\HttpKernel;
 use Ellipse\Http\HttpKernelWithoutBootFailure;
+use Ellipse\Http\Exceptions\HttpException;
 
 describe('HttpKernelWithoutBootFailure', function () {
 
@@ -15,13 +16,13 @@ describe('HttpKernelWithoutBootFailure', function () {
 
         $this->handler = mock(RequestHandlerInterface::class);
 
-        $this->kernel = new HttpKernelWithoutBootFailure($this->handler->get(), true);
-
     });
 
     it('should extend HttpKernel', function () {
 
-        expect($this->kernel)->toBeAnInstanceOf(HttpKernel::class);
+        $test = new HttpKernelWithoutBootFailure($this->handler->get(), false);
+
+        expect($test)->toBeAnInstanceOf(HttpKernel::class);
 
     });
 
@@ -30,67 +31,74 @@ describe('HttpKernelWithoutBootFailure', function () {
         beforeEach(function () {
 
             $this->request = mock(ServerRequestInterface::class);
-            $this->response = mock(ResponseInterface::class)->get();
-
-            $this->request->getServerParams->returns([]);
 
         });
 
         context('when debug option is set to true', function () {
 
-            context('when the handler ->handle() method does not throw an exception', function () {
+            beforeEach(function () {
 
-                it('should proxy the handler ->handle() method', function () {
-
-                    $this->handler->handle->with($this->request)->returns($this->response);
-
-                    $test = $this->kernel->handle($this->request->get());
-
-                    expect($test)->toBe($this->response);
-
-                });
+                $this->kernel = new HttpKernelWithoutBootFailure($this->handler->get(), true);
 
             });
 
-            context('when the handler ->handle() method throws an exception', function () {
+            context('when the request handler throws an exception', function () {
 
                 beforeEach(function () {
 
-                    $this->exception = mock(Throwable::class)->get();
+                    $exception = mock(Throwable::class)->get();
 
-                    $this->handler->handle->with($this->request)->throws($this->exception);
+                    $this->handler->handle->with($this->request->get())->throws($exception);
 
                 });
 
-                context('when the request accepts json contents', function () {
+                context('when the request is an ajax request', function () {
 
-                    it('should return a detailled json response', function () {
+                    it('should return a simple json response', function () {
 
-                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
+                        $this->request->getServerParams->returns(['HTTP_X_REQUESTED_WITH' => 'xmlhttprequest']);
 
                         $test = $this->kernel->handle($this->request->get());
 
-                        expect($test->getStatusCode())->toEqual(500);
-                        expect($test->getHeaderLine('Content-type'))->toContain('application/json');
-                        expect(json_decode((string) $test->getBody(), true))->toContain(get_class($this->exception));
-                        expect(json_decode((string) $test->getBody(), true)['context'])->toContain('Uncaught exception while processing the http request');
+                        expect(json_decode((string) $test->getBody(), true)['context'])->toContain(HttpException::class);
 
                     });
 
                 });
 
-                context('when the request does not accept contents', function () {
+                context('when the request is not an ajax request', function () {
 
-                    it('should return a detailled html response', function () {
+                    beforeEach(function () {
 
-                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
+                        $this->request->getServerParams->returns([]);
 
-                        $test = $this->kernel->handle($this->request->get());
+                    });
 
-                        expect($test->getStatusCode())->toEqual(500);
-                        expect($test->getHeaderLine('Content-type'))->toContain('text/html');
-                        expect((string) $test->getBody())->toContain(get_class($this->exception));
-                        expect((string) $test->getBody())->toContain('Uncaught exception while processing the http request');
+                    context('when the request prefers json contents', function () {
+
+                        it('should return a simple json response', function () {
+
+                            $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
+
+                            $test = $this->kernel->handle($this->request->get());
+
+                            expect(json_decode((string) $test->getBody(), true)['context'])->toContain(HttpException::class);
+
+                        });
+
+                    });
+
+                    context('when the request do not prefer json contents', function () {
+
+                        it('should return a simple html response', function () {
+
+                            $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
+
+                            $test = $this->kernel->handle($this->request->get());
+
+                            expect((string) $test->getBody())->toContain(HttpException::class);
+
+                        });
 
                     });
 

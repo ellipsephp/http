@@ -17,8 +17,6 @@ class DefaultShutdownHandler extends ShutdownHandler
      */
     public function __construct(ServerRequestInterface $request, bool $debug)
     {
-        $path = realpath(__DIR__ . '/../templates');
-
-        parent::__construct($request, new ExceptionRequestHandlerFactory($path, $debug));
+        parent::__construct($request, new ExceptionRequestHandlerFactory($debug));
     }
 }

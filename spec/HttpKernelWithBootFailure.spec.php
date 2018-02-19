@@ -3,9 +3,12 @@
 use function Eloquent\Phony\Kahlan\mock;
 
 use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Http\HttpKernel;
 use Ellipse\Http\HttpKernelWithBootFailure;
+use Ellipse\Http\Exceptions\BootException;
 
 describe('HttpKernelWithBootFailure', function () {
 
@@ -13,13 +16,13 @@ describe('HttpKernelWithBootFailure', function () {
 
         $this->exception = mock(Throwable::class)->get();
 
-        $this->kernel = new HttpKernelWithBootFailure($this->exception, true);
-
     });
 
     it('should extend HttpKernel', function () {
 
-        expect($this->kernel)->toBeAnInstanceOf(HttpKernel::class);
+        $test = new HttpKernelWithBootFailure($this->exception, false);
+
+        expect($test)->toBeAnInstanceOf(HttpKernel::class);
 
     });
 
@@ -29,41 +32,63 @@ describe('HttpKernelWithBootFailure', function () {
 
             $this->request = mock(ServerRequestInterface::class);
 
-            $this->request->getServerParams->returns([]);
-
         });
 
         context('when debug option is set to true', function () {
 
-            context('when the request accepts json contents', function () {
+            beforeEach(function () {
 
-                it('should return a detailled json response', function () {
+                $this->kernel = new HttpKernelWithBootFailure($this->exception, true);
 
-                    $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
+            });
+
+            context('when the request is an ajax request', function () {
+
+                it('should return a simple json response', function () {
+
+                    $this->request->getServerParams->returns(['HTTP_X_REQUESTED_WITH' => 'xmlhttprequest']);
 
                     $test = $this->kernel->handle($this->request->get());
 
-                    expect($test->getStatusCode())->toEqual(500);
-                    expect($test->getHeaderLine('Content-type'))->toContain('application/json');
-                    expect(json_decode((string) $test->getBody(), true))->toContain(get_class($this->exception));
-                    expect(json_decode((string) $test->getBody(), true)['context'])->toContain('Uncaught exception while booting the http kernel');
+                    expect(json_decode((string) $test->getBody(), true)['context'])->toContain(BootException::class);
 
                 });
 
             });
 
-            context('when the request does not accept json contents', function () {
+            context('when the request is not an ajax request', function () {
 
-                it('should return a detailled html response', function () {
+                beforeEach(function () {
 
-                    $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
+                    $this->request->getServerParams->returns([]);
 
-                    $test = $this->kernel->handle($this->request->get());
+                });
 
-                    expect($test->getStatusCode())->toEqual(500);
-                    expect($test->getHeaderLine('Content-type'))->toContain('text/html');
-                    expect((string) $test->getBody())->toContain('Uncaught exception while booting the http kernel');
-                    expect((string) $test->getBody())->toContain(get_class($this->exception));
+                context('when the request prefers json contents', function () {
+
+                    it('should return a simple json response', function () {
+
+                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
+
+                        $test = $this->kernel->handle($this->request->get());
+
+                        expect(json_decode((string) $test->getBody(), true)['context'])->toContain(BootException::class);
+
+                    });
+
+                });
+
+                context('when the request do not prefer json contents', function () {
+
+                    it('should return a simple html response', function () {
+
+                        $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
+
+                        $test = $this->kernel->handle($this->request->get());
+
+                        expect((string) $test->getBody())->toContain(BootException::class);
+
+                    });
 
                 });
 

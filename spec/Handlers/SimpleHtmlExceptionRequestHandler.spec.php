@@ -5,17 +5,13 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use League\Plates\Engine;
-
 use Ellipse\Http\Handlers\SimpleHtmlExceptionRequestHandler;
 
 describe('SimpleHtmlExceptionRequestHandler', function () {
 
     beforeEach(function () {
 
-        $this->engine = mock(Engine::class);
-
-        $this->handler = new SimpleHtmlExceptionRequestHandler($this->engine->get());
+        $this->handler = new SimpleHtmlExceptionRequestHandler;
 
     });
 
@@ -27,21 +23,15 @@ describe('SimpleHtmlExceptionRequestHandler', function () {
 
     describe('->handle()', function () {
 
-        beforeEach(function () {
-
-            $this->request = mock(ServerRequestInterface::class)->get();
-
-        });
-
         it('should return a simple html response', function () {
 
-            $this->engine->render->with('simple')->returns('contents');
+            $request = mock(ServerRequestInterface::class)->get();
 
-            $test = $this->handler->handle($this->request);
+            $test = $this->handler->handle($request);
 
             expect($test->getStatusCode())->toEqual(500);
             expect($test->getHeaderLine('Content-type'))->toContain('text/html');
-            expect((string) $test->getBody())->toContain('contents');
+            expect((string) $test->getBody())->toContain('Server error');
 
         });
 

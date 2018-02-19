@@ -24,22 +24,13 @@ class DetailledHtmlExceptionRequestHandler implements RequestHandlerInterface
     private $e;
 
     /**
-     * The plates templating engine used to render the template.
+     * Set up a detailled html exception request handler with the given
+     * exception.
      *
-     * @var \League\Plates\Engine
+     * @param \Throwable $e
      */
-    private $engine;
-
-    /**
-     * Set up a detailled html exception request handler with the given plates
-     * engine and exception.
-     *
-     * @param \League\Plates\Engine $engine
-     * @param \Throwable            $e
-     */
-    public function __construct(Engine $engine, Throwable $e)
+    public function __construct(Throwable $e)
     {
-        $this->engine = $engine;
         $this->e = $e;
     }
 
@@ -51,7 +42,11 @@ class DetailledHtmlExceptionRequestHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        $html = $this->engine->render('detailled', [
+        $path = realpath(__DIR__ . '/../../templates');
+
+        $engine = new Engine($path);
+
+        $html = $engine->render('detailled', [
             'details' => new Inspector($this->e),
         ]);
 

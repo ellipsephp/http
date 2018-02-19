@@ -5,7 +5,7 @@ namespace Ellipse\Http;
 use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Dispatcher\RequestHandlerWithMiddlewareStack;
-use Ellipse\Http\Middleware\ServerErrorMiddleware;
+use Ellipse\Http\Middleware\UncaughtExceptionMiddleware;
 
 class HttpKernel extends RequestHandlerWithMiddlewareStack
 {
@@ -18,8 +18,6 @@ class HttpKernel extends RequestHandlerWithMiddlewareStack
      */
     public function __construct(RequestHandlerInterface $handler, bool $debug)
     {
-        $path = realpath(__DIR__ . '/../templates');
-
-        parent::__construct($handler, [new ServerErrorMiddleware($path, $debug)]);
+        parent::__construct($handler, [new UncaughtExceptionMiddleware($debug)]);
     }
 }

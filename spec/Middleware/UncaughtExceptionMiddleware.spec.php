@@ -6,29 +6,25 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Http\HttpKernel;
+use Ellipse\Exceptions\ExceptionHandlerMiddleware;
+use Ellipse\Http\Middleware\UncaughtExceptionMiddleware;
 
-describe('HttpKernel', function () {
+describe('UncaughtExceptionMiddleware', function () {
 
-    beforeEach(function () {
+    it('should extend ExceptionHandlerMiddleware', function () {
 
-        $this->handler = mock(RequestHandlerInterface::class);
+        $test = new UncaughtExceptionMiddleware(false);
 
-    });
-
-    it('should implement RequestHandlerInterface', function () {
-
-        $test = new HttpKernel($this->handler->get(), false);
-
-        expect($test)->toBeAnInstanceOf(RequestHandlerInterface::class);
+        expect($test)->toBeAnInstanceOf(ExceptionHandlerMiddleware::class);
 
     });
 
-    describe('->handle()', function () {
+    describe('->process()', function () {
 
         beforeEach(function () {
 
             $this->request = mock(ServerRequestInterface::class);
+            $this->handler = mock(RequestHandlerInterface::class);
 
         });
 
@@ -36,19 +32,19 @@ describe('HttpKernel', function () {
 
             beforeEach(function () {
 
-                $this->kernel = new HttpKernel($this->handler->get(), false);
+                $this->middleware = new UncaughtExceptionMiddleware(false);
 
             });
 
-            context('when the request handler does not throw an exception', function () {
+            context('when the given request handler does not throw an exception', function () {
 
-                it('should proxy the request handler', function () {
+                it('should proxy the given request handler', function () {
 
                     $response = mock(ResponseInterface::class)->get();
 
                     $this->handler->handle->with($this->request)->returns($response);
 
-                    $test = $this->kernel->handle($this->request->get());
+                    $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                     expect($test)->toBe($response);
 
@@ -56,7 +52,7 @@ describe('HttpKernel', function () {
 
             });
 
-            context('when the request handler throws an exception', function () {
+            context('when the given request handler throws an exception', function () {
 
                 beforeEach(function () {
 
@@ -72,7 +68,7 @@ describe('HttpKernel', function () {
 
                         $this->request->getServerParams->returns(['HTTP_X_REQUESTED_WITH' => 'xmlhttprequest']);
 
-                        $test = $this->kernel->handle($this->request->get());
+                        $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                         expect($test->getStatusCode())->toEqual(500);
                         expect($test->getHeaderLine('Content-type'))->toContain('application/json');
@@ -96,7 +92,7 @@ describe('HttpKernel', function () {
 
                             $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
 
-                            $test = $this->kernel->handle($this->request->get());
+                            $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                             expect($test->getStatusCode())->toEqual(500);
                             expect($test->getHeaderLine('Content-type'))->toContain('application/json');
@@ -112,7 +108,7 @@ describe('HttpKernel', function () {
 
                             $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
 
-                            $test = $this->kernel->handle($this->request->get());
+                            $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                             expect($test->getStatusCode())->toEqual(500);
                             expect($test->getHeaderLine('Content-type'))->toContain('text/html');
@@ -132,19 +128,19 @@ describe('HttpKernel', function () {
 
             beforeEach(function () {
 
-                $this->kernel = new HttpKernel($this->handler->get(), true);
+                $this->middleware = new UncaughtExceptionMiddleware(true);
 
             });
 
-            context('when the request handler does not throw an exception', function () {
+            context('when the given request handler does not throw an exception', function () {
 
-                it('should proxy the request handler', function () {
+                it('should proxy the given request handler', function () {
 
                     $response = mock(ResponseInterface::class)->get();
 
                     $this->handler->handle->with($this->request)->returns($response);
 
-                    $test = $this->kernel->handle($this->request->get());
+                    $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                     expect($test)->toBe($response);
 
@@ -152,7 +148,7 @@ describe('HttpKernel', function () {
 
             });
 
-            context('when the request handler throws an exception', function () {
+            context('when the given request handler throws an exception', function () {
 
                 beforeEach(function () {
 
@@ -168,7 +164,7 @@ describe('HttpKernel', function () {
 
                         $this->request->getServerParams->returns(['HTTP_X_REQUESTED_WITH' => 'xmlhttprequest']);
 
-                        $test = $this->kernel->handle($this->request->get());
+                        $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                         expect($test->getStatusCode())->toEqual(500);
                         expect($test->getHeaderLine('Content-type'))->toContain('application/json');
@@ -192,7 +188,7 @@ describe('HttpKernel', function () {
 
                             $this->request->getHeaderLine->with('Accept', '*/*')->returns('application/json');
 
-                            $test = $this->kernel->handle($this->request->get());
+                            $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                             expect($test->getStatusCode())->toEqual(500);
                             expect($test->getHeaderLine('Content-type'))->toContain('application/json');
@@ -208,7 +204,7 @@ describe('HttpKernel', function () {
 
                             $this->request->getHeaderLine->with('Accept', '*/*')->returns('*/*');
 
-                            $test = $this->kernel->handle($this->request->get());
+                            $test = $this->middleware->process($this->request->get(), $this->handler->get());
 
                             expect($test->getStatusCode())->toEqual(500);
                             expect($test->getHeaderLine('Content-type'))->toContain('text/html');

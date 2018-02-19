@@ -13,26 +13,27 @@ use Ellipse\Http\Exceptions\HttpKernelTypeException;
 class HttpKernelFactory
 {
     /**
-     * The delegace actually building the request handler used as http kernel.
+     * The bootstrap callable returning the application request handler.
      *
      * @var callable
      */
-    private $delegate;
+    private $bootstrap;
 
     /**
-     * Set up a http kernel factory with the given delegate.
+     * Set up a http kernel factory with the given bootstrap callable.
      *
-     * @param callable $delegate
+     * @param callable $bootstrap
      */
-    public function __construct(callable $delegate)
+    public function __construct(callable $bootstrap)
     {
-        $this->delegate = $delegate;
+        $this->bootstrap = $bootstrap;
     }
 
     /**
-     * Proxy the delegate and wrap the produced request handler inside a http
-     * kernel. When an exception is thrown by the deletate, return a http kernel
-     * with boot failure so an http kernel is always returned.
+     * Wrap a http kernel around the request handler returned by the bootstrap
+     * callable. When an exception is thrown by the bootstrap callable, return a
+     * http kernel with boot failure wrapped around it so a http kernel is
+     * always returned.
      *
      * @param string    $env
      * @param bool      $debug
@@ -42,7 +43,7 @@ class HttpKernelFactory
     {
         try {
 
-            $kernel = ($this->delegate)($env, $debug);
+            $kernel = ($this->bootstrap)($env, $debug);
 
             if ($kernel instanceof RequestHandlerInterface) {
 

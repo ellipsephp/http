@@ -14,17 +14,17 @@ describe('HttpKernelFactory', function () {
 
     beforeEach(function () {
 
-        $this->delegate = stub();
+        $this->bootstrap = stub();
 
-        $this->factory = new HttpKernelFactory($this->delegate);
+        $this->factory = new HttpKernelFactory($this->bootstrap);
 
     });
 
     describe('->__invoke()', function () {
 
-        context('when the delegate does not throw an exception', function () {
+        context('when the bootstrap does not throw an exception', function () {
 
-            context('when the delegate returns an implementation of RequestHandlerInterface', function () {
+            context('when the bootstrap returns an implementation of RequestHandlerInterface', function () {
 
                 context('when the debug value is set to true', function () {
 
@@ -32,7 +32,7 @@ describe('HttpKernelFactory', function () {
 
                         $handler = mock(RequestHandlerInterface::class)->get();
 
-                        $this->delegate->with('env', true)->returns($handler);
+                        $this->bootstrap->with('env', true)->returns($handler);
 
                         $test = ($this->factory)('env', true);
 
@@ -50,7 +50,7 @@ describe('HttpKernelFactory', function () {
 
                         $handler = mock(RequestHandlerInterface::class)->get();
 
-                        $this->delegate->with('env', false)->returns($handler);
+                        $this->bootstrap->with('env', false)->returns($handler);
 
                         $test = ($this->factory)('env', false);
 
@@ -64,7 +64,7 @@ describe('HttpKernelFactory', function () {
 
             });
 
-            context('when the delegate does not return an implementation of RequestHandlerInterface', function () {
+            context('when the bootstrap does not return an implementation of RequestHandlerInterface', function () {
 
                 beforeEach(function () {
 
@@ -78,7 +78,7 @@ describe('HttpKernelFactory', function () {
 
                     it('should return a http kernel with boot failure with a HttpKernelTypeException and the debug value set to true', function () {
 
-                        $this->delegate->with('env', true)->returns('handler');
+                        $this->bootstrap->with('env', true)->returns('handler');
 
                         $test = ($this->factory)('env', true);
 
@@ -94,7 +94,7 @@ describe('HttpKernelFactory', function () {
 
                     it('should return a http kernel with boot failure with a HttpKernelTypeException and the debug value set to false', function () {
 
-                        $this->delegate->with('env', false)->returns('handler');
+                        $this->bootstrap->with('env', false)->returns('handler');
 
                         $test = ($this->factory)('env', false);
 
@@ -110,7 +110,7 @@ describe('HttpKernelFactory', function () {
 
         });
 
-        context('when the delegate throws an exception', function () {
+        context('when the bootstrap throws an exception', function () {
 
             context('when the debug value is set to true', function () {
 
@@ -118,7 +118,7 @@ describe('HttpKernelFactory', function () {
 
                     $exception = mock(Throwable::class)->get();
 
-                    $this->delegate->with('env', true)->throws($exception);
+                    $this->bootstrap->with('env', true)->throws($exception);
 
                     $test = ($this->factory)('env', true);
 
@@ -136,7 +136,7 @@ describe('HttpKernelFactory', function () {
 
                     $exception = mock(Throwable::class)->get();
 
-                    $this->delegate->with('env', false)->throws($exception);
+                    $this->bootstrap->with('env', false)->throws($exception);
 
                     $test = ($this->factory)('env', false);
 

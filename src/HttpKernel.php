@@ -4,10 +4,10 @@ namespace Ellipse\Http;
 
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Dispatcher;
+use Ellipse\Dispatcher\RequestHandlerWithMiddlewareStack;
 use Ellipse\Http\Middleware\ServerErrorMiddleware;
 
-class HttpKernel extends Dispatcher
+class HttpKernel extends RequestHandlerWithMiddlewareStack
 {
     /**
      * Set up a http kernel with the given request handler wrapped inside a

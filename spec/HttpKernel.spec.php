@@ -6,8 +6,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Dispatcher;
 use Ellipse\Http\HttpKernel;
+use Ellipse\Http\Middleware\ServerErrorMiddleware;
 
 describe('HttpKernel', function () {
 
@@ -17,11 +17,11 @@ describe('HttpKernel', function () {
 
     });
 
-    it('should extend Dispatcher', function () {
+    it('should implement RequestHandlerInterface', function () {
 
         $test = new HttpKernel($this->handler->get(), true);
 
-        expect($test)->toBeAnInstanceOf(Dispatcher::class);
+        expect($test)->toBeAnInstanceOf(RequestHandlerInterface::class);
 
     });
 

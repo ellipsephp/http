@@ -12,7 +12,7 @@ use Zend\Diactoros\Response\JsonResponse;
 
 use Ellipse\Http\Exceptions\Inspector;
 
-class JsonDetailledExceptionRequestHandler implements RequestHandlerInterface
+class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
 {
     /**
      * The caught exception.
@@ -22,7 +22,7 @@ class JsonDetailledExceptionRequestHandler implements RequestHandlerInterface
     private $e;
 
     /**
-     * Set up a json detailled server error request handler with the given
+     * Set up a detailled json exception request handler with the given
      * exception.
      *
      * @param \Throwable $e
@@ -33,7 +33,7 @@ class JsonDetailledExceptionRequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * Return a json detailled response for the exception.
+     * Return a detailled json response for the exception.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface

@@ -8,10 +8,10 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Zend\Diactoros\Response\JsonResponse;
 
-class JsonSimpleExceptionRequestHandler implements RequestHandlerInterface
+class SimpleJsonExceptionRequestHandler implements RequestHandlerInterface
 {
     /**
-     * Return a json simple response for the given exception.
+     * Return a simple json response for the exception.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface

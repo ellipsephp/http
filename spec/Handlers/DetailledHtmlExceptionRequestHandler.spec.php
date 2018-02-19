@@ -8,16 +8,16 @@ use Psr\Http\Server\RequestHandlerInterface;
 use League\Plates\Engine;
 
 use Ellipse\Http\Exceptions\Inspector;
-use Ellipse\Http\Handlers\HtmlDetailledExceptionRequestHandler;
+use Ellipse\Http\Handlers\DetailledHtmlExceptionRequestHandler;
 
-describe('HtmlDetailledExceptionRequestHandler', function () {
+describe('DetailledHtmlExceptionRequestHandler', function () {
 
     beforeEach(function () {
 
         $this->engine = mock(Engine::class);
         $this->exception = mock(Throwable::class)->get();
 
-        $this->handler = new HtmlDetailledExceptionRequestHandler($this->engine->get(), $this->exception);
+        $this->handler = new DetailledHtmlExceptionRequestHandler($this->engine->get(), $this->exception);
 
     });
 

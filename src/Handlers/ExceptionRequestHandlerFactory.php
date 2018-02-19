@@ -56,13 +56,12 @@ class ExceptionRequestHandlerFactory
         $engine = new Engine($this->path);
 
         $json = $this->debug
-            ? new JsonDetailledExceptionRequestHandler($e)
-            : new JsonSimpleExceptionRequestHandler;
+            ? new DetailledJsonExceptionRequestHandler($e)
+            : new SimpleJsonExceptionRequestHandler;
 
         $html = $this->debug
-            ? new HtmlDetailledExceptionRequestHandler($engine, $e)
-            : new HtmlSimpleExceptionRequestHandler($engine);
-
+            ? new DetailledHtmlExceptionRequestHandler($engine, $e)
+            : new SimpleHtmlExceptionRequestHandler($engine);
 
         return new RequestHandlerWithMiddleware($html,
             new JsonHandlerMiddleware($negotiator, $priorities, $json)

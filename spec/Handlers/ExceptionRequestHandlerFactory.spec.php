@@ -8,10 +8,10 @@ use League\Plates\Engine;
 use Ellipse\Dispatcher\RequestHandlerWithMiddleware;
 use Ellipse\Http\Middleware\JsonHandlerMiddleware;
 use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
-use Ellipse\Http\Handlers\HtmlSimpleExceptionRequestHandler;
-use Ellipse\Http\Handlers\JsonSimpleExceptionRequestHandler;
-use Ellipse\Http\Handlers\HtmlDetailledExceptionRequestHandler;
-use Ellipse\Http\Handlers\JsonDetailledExceptionRequestHandler;
+use Ellipse\Http\Handlers\SimpleHtmlExceptionRequestHandler;
+use Ellipse\Http\Handlers\SimpleJsonExceptionRequestHandler;
+use Ellipse\Http\Handlers\DetailledHtmlExceptionRequestHandler;
+use Ellipse\Http\Handlers\DetailledJsonExceptionRequestHandler;
 
 describe('ExceptionRequestHandlerFactory', function () {
 
@@ -35,11 +35,11 @@ describe('ExceptionRequestHandlerFactory', function () {
                 $test = $factory($this->exception);
 
                 $handler = new RequestHandlerWithMiddleware(
-                    new HtmlSimpleExceptionRequestHandler($this->engine),
+                    new SimpleHtmlExceptionRequestHandler($this->engine),
                     new JsonHandlerMiddleware(
                         $this->negotiator,
                         $this->priorities,
-                        new JsonSimpleExceptionRequestHandler
+                        new SimpleJsonExceptionRequestHandler
                     )
                 );
 
@@ -58,11 +58,11 @@ describe('ExceptionRequestHandlerFactory', function () {
                 $test = $factory($this->exception);
 
                 $handler = new RequestHandlerWithMiddleware(
-                    new HtmlDetailledExceptionRequestHandler($this->engine, $this->exception),
+                    new DetailledHtmlExceptionRequestHandler($this->engine, $this->exception),
                     new JsonHandlerMiddleware(
                         $this->negotiator,
                         $this->priorities,
-                        new JsonDetailledExceptionRequestHandler($this->exception)
+                        new DetailledJsonExceptionRequestHandler($this->exception)
                     )
                 );
 

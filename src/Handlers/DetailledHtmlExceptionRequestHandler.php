@@ -14,7 +14,7 @@ use Zend\Diactoros\Response\HtmlResponse;
 
 use Ellipse\Http\Exceptions\Inspector;
 
-class HtmlDetailledExceptionRequestHandler implements RequestHandlerInterface
+class DetailledHtmlExceptionRequestHandler implements RequestHandlerInterface
 {
     /**
      * The caught exception.
@@ -31,8 +31,8 @@ class HtmlDetailledExceptionRequestHandler implements RequestHandlerInterface
     private $engine;
 
     /**
-     * Set up a html detailled server error request handler with the given
-     * plates engine and exception.
+     * Set up a detailled html exception request handler with the given plates
+     * engine and exception.
      *
      * @param \League\Plates\Engine $engine
      * @param \Throwable            $e
@@ -44,7 +44,7 @@ class HtmlDetailledExceptionRequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * Return a html simple response for the exception.
+     * Return a detailled html response for the exception.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface

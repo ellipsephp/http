@@ -10,7 +10,7 @@ use League\Plates\Engine;
 
 use Zend\Diactoros\Response\HtmlResponse;
 
-class HtmlSimpleExceptionRequestHandler implements RequestHandlerInterface
+class SimpleHtmlExceptionRequestHandler implements RequestHandlerInterface
 {
     /**
      * The plates templating engine used to render the template.
@@ -20,7 +20,7 @@ class HtmlSimpleExceptionRequestHandler implements RequestHandlerInterface
     private $engine;
 
     /**
-     * Set up a html simple server error request handler with the given plates
+     * Set up a simple html exception request handler with the given plates
      * engine.
      *
      * @param \League\Plates\Engine $engine
@@ -31,7 +31,7 @@ class HtmlSimpleExceptionRequestHandler implements RequestHandlerInterface
     }
 
     /**
-     * Return a html simple response for the exception.
+     * Return a simple html response for the exception.
      *
      * @param \Psr\Http\Message\ServerRequestInterface $request
      * @return \Psr\Http\Message\ResponseInterface

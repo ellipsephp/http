@@ -5,15 +5,15 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Http\Handlers\JsonDetailledExceptionRequestHandler;
+use Ellipse\Http\Handlers\DetailledJsonExceptionRequestHandler;
 
-describe('JsonDetailledExceptionRequestHandler', function () {
+describe('DetailledJsonExceptionRequestHandler', function () {
 
     beforeEach(function () {
 
         $this->exception = mock(Throwable::class)->get();
 
-        $this->handler = new JsonDetailledExceptionRequestHandler($this->exception);
+        $this->handler = new DetailledJsonExceptionRequestHandler($this->exception);
 
     });
 

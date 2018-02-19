@@ -33,9 +33,6 @@ describe('ExceptionRequestHandler', function () {
         beforeEach(function () {
 
             $this->request = mock(ServerRequestInterface::class);
-            $this->response = mock(ResponseInterface::class)->get();
-
-            $this->request->getServerParams->returns([]);
 
         });
 

@@ -5,7 +5,6 @@ namespace Ellipse\Http\Handlers;
 use Throwable;
 
 use Negotiation\Negotiator;
-use League\Plates\Engine;
 
 class ExceptionRequestHandlerFactory
 {

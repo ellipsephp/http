@@ -1,6 +1,6 @@
 <?php declare(strict_types=1);
 
-namespace Ellipse\Http;
+namespace Ellipse\Http\Error;
 
 use Throwable;
 use ErrorException;
@@ -10,16 +10,15 @@ use function Http\Response\send;
 use Psr\Http\Message\ServerRequestInterface;
 
 use Ellipse\Http\Exceptions\FatalException;
-use Ellipse\Http\Exceptions\Response\RequestBasedResponseFactory;
 
 class ShutdownHandler
 {
     /**
-     * The error code of the errors to report.
+     * Code of errors which can be reported by this handler.
      *
      * @var int
      */
-    private $report;
+    CONST REPORTABLE = E_ERROR | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING;
 
     /**
      * The incoming request.
@@ -29,11 +28,19 @@ class ShutdownHandler
     private $request;
 
     /**
-     * The exception request handler factory producing a request handler.
+     * The request handler factory producing a request handler for a given
+     * exception.
      *
      * @var callable
      */
     private $factory;
+
+    /**
+     * The error code of the errors to report.
+     *
+     * @var int
+     */
+    public $report;
 
     /**
      * Set up a shutdown handler with the given request and request handler
@@ -50,16 +57,13 @@ class ShutdownHandler
      */
     public function __construct(ServerRequestInterface $request, callable $factory)
     {
-        $this->request = $request;
-        $this->factory = $factory;
-
         $config = error_reporting();
 
-        $fatal = E_ERROR | E_PARSE | E_CORE_ERROR | E_CORE_WARNING | E_COMPILE_ERROR | E_COMPILE_WARNING;
+        error_reporting($config & ~ self::REPORTABLE);
 
-        $this->report = $config & $fatal;
-
-        error_reporting($config & ~ $fatal);
+        $this->request = $request;
+        $this->factory = $factory;
+        $this->report = $config & self::REPORTABLE;
     }
 
     /**
@@ -91,6 +95,5 @@ class ShutdownHandler
             }
 
         }
-
     }
 }

@@ -3,9 +3,9 @@
 namespace Ellipse\Http\Exceptions;
 
 use Throwable;
-use RuntimeException;
+use Exception;
 
-class FatalException extends RuntimeException implements HttpExceptionInterface
+class FatalException extends Exception implements HttpExceptionInterface
 {
     public function __construct(Throwable $previous)
     {

@@ -5,7 +5,7 @@ use function Eloquent\Phony\Kahlan\stub;
 
 use Psr\Http\Message\ServerRequestInterface;
 
-use Ellipse\Http\ShutdownHandler;
+use Ellipse\Http\Error\ShutdownHandler;
 
 describe('ShutdownHandler', function () {
 
@@ -19,16 +19,6 @@ describe('ShutdownHandler', function () {
     });
 
     describe('->__invoke()', function () {
-
-        context('when there is no last error', function () {
-
-            it('should run without error', function () {
-
-                expect($this->handler)->not->toThrow();
-
-            });
-
-        });
 
     });
 

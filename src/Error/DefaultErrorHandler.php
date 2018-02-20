@@ -1,17 +1,18 @@
 <?php declare(strict_types=1);
 
-namespace Ellipse\Http;
+namespace Ellipse\Http\Error;
 
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 
 use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
 
-class DefaultShutdownHandler extends ShutdownHandler
+class DefaultErrorHandler extends ErrorHandler
 {
     /**
-     * Set up a shutdown handler using a default exception request handler
-     * factory with the given request and response prototype.
+     * Set up an exception handler using the given request and a default
+     * exception request handler factory, using the given response prototype and
+     * debug mode.
      *
      * @param \Psr\Http\Message\ServerRequestInterface  $request
      * @param \Psr\Http\Message\ResponseInterface       $prototype

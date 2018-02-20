@@ -5,10 +5,10 @@ namespace Ellipse\Http\Exceptions;
 use Throwable;
 use Exception;
 
-class BootException extends Exception implements HttpExceptionInterface
+class UncaughtException extends Exception implements HttpExceptionInterface
 {
     public function __construct(Throwable $previous)
     {
-        parent::__construct("Uncaught exception while booting the http kernel", 0, $previous);
+        parent::__construct("Uncaught exception", 0, $previous);
     }
 }

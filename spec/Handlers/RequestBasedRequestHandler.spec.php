@@ -6,21 +6,13 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Negotiation\Negotiator;
-
 use Ellipse\Http\Handlers\RequestBasedRequestHandler;
 
 describe('RequestBasedRequestHandler', function () {
 
-    beforeEach(function () {
-
-        $this->negotiator = new Negotiator;
-
-    });
-
     it('should implement RequestHandlerInterface', function () {
 
-        $test = new RequestBasedRequestHandler($this->negotiator, []);
+        $test = new RequestBasedRequestHandler([]);
 
         expect($test)->toBeAnInstanceOf(RequestHandlerInterface::class);
 
@@ -44,7 +36,7 @@ describe('RequestBasedRequestHandler', function () {
 
                 $this->json = mock(RequestHandlerInterface::class);
 
-                $this->handler = new RequestBasedRequestHandler($this->negotiator, [
+                $this->handler = new RequestBasedRequestHandler([
                     'text/html' => $this->html->get(),
                     'application/json' => $this->json->get(),
                     'text/plain' => $this->text->get(),
@@ -116,7 +108,7 @@ describe('RequestBasedRequestHandler', function () {
 
             beforeEach(function () {
 
-                $this->handler = new RequestBasedRequestHandler($this->negotiator, [
+                $this->handler = new RequestBasedRequestHandler([
                     'text/html' => $this->html->get(),
                     'text/plain' => $this->text->get(),
                 ]);

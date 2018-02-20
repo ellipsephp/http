@@ -10,8 +10,7 @@ use Ellipse\Http\Handlers\RequestHandlerWithoutBootFailure;
 class HttpKernelWithoutBootFailure extends HttpKernel
 {
     /**
-     * Set up a http kernel with the given request handler wrapped inside a http
-     * exception middleware.
+     * Set up a http kernel with a request handler without boot failure.
      *
      * @param \Psr\Http\Server\RequestHandlerInterface  $handler
      * @param \Psr\Http\Message\ResponseInterface       $prototype

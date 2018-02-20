@@ -12,8 +12,9 @@ use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
 class UncaughtExceptionMiddleware extends ExceptionHandlerMiddleware
 {
     /**
-     * Set up an exception handler middleware catching all errors and producing
-     * a response with a server error request handler.
+     * Set up an exception handler middleware catching all errors with an
+     * exception request handler factory usint the given response prototype
+     * and debug mode.
      *
      * @param \Psr\Http\Message\ResponseInterface   $prototype
      * @param bool                                  $debug

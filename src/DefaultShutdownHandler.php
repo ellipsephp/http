@@ -10,8 +10,8 @@ use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
 class DefaultShutdownHandler extends ShutdownHandler
 {
     /**
-     * Set up a shotdown handler with the given request and a default reponse
-     * factory.
+     * Set up a shutdown handler using a default exception request handler
+     * factory with the given request and response prototype.
      *
      * @param \Psr\Http\Message\ServerRequestInterface  $request
      * @param \Psr\Http\Message\ResponseInterface       $prototype

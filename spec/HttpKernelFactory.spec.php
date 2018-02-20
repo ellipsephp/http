@@ -3,9 +3,8 @@
 use function Eloquent\Phony\Kahlan\stub;
 use function Eloquent\Phony\Kahlan\mock;
 
+use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
-
-use Zend\Diactoros\Response;
 
 use Ellipse\Http\HttpKernelFactory;
 use Ellipse\Http\HttpKernelWithoutBootFailure;
@@ -17,7 +16,7 @@ describe('HttpKernelFactory', function () {
     beforeEach(function () {
 
         $this->bootstrap = stub();
-        $this->prototype = new Response;
+        $this->prototype = mock(ResponseInterface::class)->get();
 
         $this->factory = new HttpKernelFactory($this->bootstrap);
 

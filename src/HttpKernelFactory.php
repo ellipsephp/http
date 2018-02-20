@@ -4,7 +4,6 @@ namespace Ellipse\Http;
 
 use Throwable;
 
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
@@ -44,15 +43,15 @@ class HttpKernelFactory
     {
         try {
 
-            $kernel = ($this->bootstrap)($prototype, $env, $debug);
+            $handler = ($this->bootstrap)($prototype, $env, $debug);
 
-            if ($kernel instanceof RequestHandlerInterface) {
+            if ($handler instanceof RequestHandlerInterface) {
 
-                return new HttpKernelWithoutBootFailure($kernel, $prototype, $debug);
+                return new HttpKernelWithoutBootFailure($handler, $prototype, $debug);
 
             }
 
-            throw new HttpKernelTypeException($kernel);
+            throw new HttpKernelTypeException($handler);
 
         }
 

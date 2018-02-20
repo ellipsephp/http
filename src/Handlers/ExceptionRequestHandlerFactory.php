@@ -6,8 +6,6 @@ use Throwable;
 
 use Psr\Http\Message\ResponseInterface;
 
-use Negotiation\Negotiator;
-
 class ExceptionRequestHandlerFactory
 {
     /**
@@ -26,7 +24,7 @@ class ExceptionRequestHandlerFactory
 
     /**
      * Set up an exeception request handler factory with the given response
-     * prototype and debug status.
+     * prototype and debug mode.
      *
      * @param \Psr\Http\Message\ResponseInterface   $prototype
      * @param bool                                  $debug
@@ -46,8 +44,6 @@ class ExceptionRequestHandlerFactory
      */
     public function __invoke(Throwable $e): ExceptionRequestHandler
     {
-        $negotiator = new Negotiator;
-
-        return new ExceptionRequestHandler($e, $negotiator, $this->prototype, $this->debug);
+        return new ExceptionRequestHandler($e, $this->prototype, $this->debug);
     }
 }

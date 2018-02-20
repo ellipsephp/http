@@ -13,7 +13,7 @@ use Ellipse\Http\Exceptions\BootException;
 class RequestHandlerWithBootFailure implements RequestHandlerInterface
 {
     /**
-     * The exception thrown during booting.
+     * The exception thrown during bootstrapping.
      *
      * @var \Throwable
      */

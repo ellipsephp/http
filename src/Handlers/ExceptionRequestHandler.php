@@ -6,22 +6,19 @@ use Throwable;
 
 use Psr\Http\Message\ResponseInterface;
 
-use Negotiation\Negotiator;
-
 class ExceptionRequestHandler extends RequestBasedRequestHandler
 {
     /**
-     * Set up an exception request handler with the given exception, content
-     * type negotiator and debug status.
+     * Set up an exception request handler with the given exception, response
+     * prototype and debug mode.
      *
      * @param \Throwable                            $e
-     * @param \Negotiation\Negotiator               $negotiator
      * @param \Psr\Http\Message\ResponseInterface   $prototype
      * @param bool                                  $debug
      */
-    public function __construct(Throwable $e, Negotiator $negotiator, ResponseInterface $prototype, bool $debug)
+    public function __construct(Throwable $e, ResponseInterface $prototype, bool $debug)
     {
-        parent::__construct($negotiator, [
+        parent::__construct([
             'text/html' => $debug
                 ? new DetailledHtmlExceptionRequestHandler($e, $prototype)
                 : new SimpleHtmlExceptionRequestHandler($prototype),

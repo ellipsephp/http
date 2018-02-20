@@ -11,13 +11,6 @@ use Negotiation\Negotiator;
 class RequestBasedRequestHandler implements RequestHandlerInterface
 {
     /**
-     * The mediatype negotiator.
-     *
-     * @var \Negotiation\Negotiator
-     */
-    private $negotiator;
-
-    /**
      * The associative array of mediatype to handler.
      *
      * @var array
@@ -25,20 +18,18 @@ class RequestBasedRequestHandler implements RequestHandlerInterface
     private $handlers;
 
     /**
-     * Set up a request based request handler with the given content type
-     * negotiator and associative array of mediatype to handler.
+     * Set up a request based request handler with the given associative array
+     * mapping mediatype to handler.
      *
-     * @param \Negotiation\Negotiator   $negotiator
-     * @param array                     $handlers
+     * @param array $handlers
      */
-    public function __construct(Negotiator $negotiator, array $handlers)
+    public function __construct(array $handlers)
     {
-        $this->negotiator = $negotiator;
         $this->handlers = $handlers;
     }
 
     /**
-     * When a handler is associated to application/json mediatype is present and
+     * When a handler associated to application/json mediatype is present and
      * the request is an ajax request, proxy the associated request handler.
      * Otherwise proxy the preferred one based on the request accept header.
      *
@@ -86,10 +77,11 @@ class RequestBasedRequestHandler implements RequestHandlerInterface
      */
     private function preferred(ServerRequestInterface $request): RequestHandlerInterface
     {
+        $negotiator = new Negotiator;
         $accept = $request->getHeaderLine('Accept', '*/*');
         $priorities = array_keys($this->handlers);
 
-        $best = $this->negotiator->getBest($accept, $priorities);
+        $best = $negotiator->getBest($accept, $priorities);
 
         $mediatype = $best ? $best->getValue() : current($priorities);
 

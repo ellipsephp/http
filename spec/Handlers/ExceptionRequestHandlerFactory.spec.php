@@ -4,10 +4,6 @@ use function Eloquent\Phony\Kahlan\mock;
 
 use Psr\Http\Message\ResponseInterface;
 
-use Negotiation\Negotiator;
-
-use Zend\Diactoros\Response;
-
 use Ellipse\Http\Handlers\ExceptionRequestHandler;
 use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
 
@@ -16,8 +12,7 @@ describe('ExceptionRequestHandlerFactory', function () {
     beforeEach(function () {
 
         $this->exception = mock(Throwable::class)->get();
-        $this->negotiator = new Negotiator;
-        $this->prototype = new Response;
+        $this->prototype = mock(ResponseInterface::class)->get();
 
     });
 
@@ -31,7 +26,7 @@ describe('ExceptionRequestHandlerFactory', function () {
 
                 $test = $factory($this->exception);
 
-                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, $this->prototype, false);
+                $handler = new ExceptionRequestHandler($this->exception, $this->prototype, false);
 
                 expect($test)->toEqual($handler);
 
@@ -47,7 +42,7 @@ describe('ExceptionRequestHandlerFactory', function () {
 
                 $test = $factory($this->exception);
 
-                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, $this->prototype, true);
+                $handler = new ExceptionRequestHandler($this->exception, $this->prototype, true);
 
                 expect($test)->toEqual($handler);
 

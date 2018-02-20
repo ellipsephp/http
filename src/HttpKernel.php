@@ -11,8 +11,9 @@ use Ellipse\Http\Middleware\UncaughtExceptionMiddleware;
 class HttpKernel extends RequestHandlerWithMiddlewareStack
 {
     /**
-     * Set up a http kernel with the given request handler wrapped inside a
-     * server error middleware.
+     * Set up a http kernel with the given request handler wrapped inside an
+     * uncaught exception middleware, using the given response prototype and
+     * debug mode.
      *
      * @param \Psr\Http\Server\RequestHandlerInterface  $handler
      * @param \Psr\Http\Message\ResponseInterface       $prototype

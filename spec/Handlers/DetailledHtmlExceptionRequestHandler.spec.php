@@ -7,7 +7,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Zend\Diactoros\Response;
 
-use Ellipse\Http\Exceptions\Inspector;
 use Ellipse\Http\Handlers\DetailledHtmlExceptionRequestHandler;
 
 describe('DetailledHtmlExceptionRequestHandler', function () {

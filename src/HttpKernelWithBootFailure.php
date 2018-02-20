@@ -11,7 +11,7 @@ use Ellipse\Http\Handlers\RequestHandlerWithBootFailure;
 class HttpKernelWithBootFailure extends HttpKernel
 {
     /**
-     * Set up a http kernel with a boot exception request handler.
+     * Set up a http kernel with a request handler with boot failure.
      *
      * @param \Throwable                            $e
      * @param \Psr\Http\Message\ResponseInterface   $prototype

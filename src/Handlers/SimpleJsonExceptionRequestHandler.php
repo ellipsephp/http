@@ -6,10 +6,26 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Zend\Diactoros\Response\JsonResponse;
-
 class SimpleJsonExceptionRequestHandler implements RequestHandlerInterface
 {
+    /**
+     * The response prototype.
+     *
+     * @var \Psr\Http\Message\ResponseInterface
+     */
+    private $prototype;
+
+    /**
+     * Set up a simple json exception request handler with the given response
+     * prototype.
+     *
+     * @param \Psr\Http\Message\ResponseInterface $prototype
+     */
+    public function __construct(ResponseInterface $prototype)
+    {
+        $this->prototype = $prototype;
+    }
+
     /**
      * Return a simple json response for the exception.
      *
@@ -18,6 +34,12 @@ class SimpleJsonExceptionRequestHandler implements RequestHandlerInterface
      */
     public function handle(ServerRequestInterface $request): ResponseInterface
     {
-        return new JsonResponse(['message' => 'Server error'], 500);
+        $contents = json_encode(['message' => 'Server error']);
+
+        $this->prototype->getBody()->write($contents);
+
+        return $this->prototype
+            ->withStatus(500)
+            ->withHeader('Content-type', 'application/json');
     }
 }

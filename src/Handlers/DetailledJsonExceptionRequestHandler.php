@@ -8,8 +8,6 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Zend\Diactoros\Response\JsonResponse;
-
 use Ellipse\Http\Exceptions\Inspector;
 
 class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
@@ -22,14 +20,23 @@ class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
     private $e;
 
     /**
-     * Set up a detailled json exception request handler with the given
-     * exception.
+     * The response prototype.
      *
-     * @param \Throwable $e
+     * @var \Psr\Http\Message\ResponseInterface
      */
-    public function __construct(Throwable $e)
+    private $prototype;
+
+    /**
+     * Set up a detailled json exception request handler with the given
+     * exception and response prototype.
+     *
+     * @param \Throwable                            $e
+     * @param \Psr\Http\Message\ResponseInterface   $prototype
+     */
+    public function __construct(Throwable $e, ResponseInterface $prototype)
     {
         $this->e = $e;
+        $this->prototype = $prototype;
     }
 
     /**
@@ -42,7 +49,7 @@ class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
     {
         $details = new Inspector($this->e);
 
-        return new JsonResponse([
+        $contents = json_encode([
             'type' => get_class($details->inner()),
             'message' => $details->inner()->getMessage(),
             'context' => [
@@ -50,6 +57,12 @@ class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
                 'message' => $details->current()->getMessage(),
             ],
             'trace' => $details->inner()->getTrace(),
-        ], 500);
+        ]);
+
+        $this->prototype->getBody()->write($contents);
+
+        return $this->prototype
+            ->withStatus(500)
+            ->withHeader('Content-type', 'application/json');
     }
 }

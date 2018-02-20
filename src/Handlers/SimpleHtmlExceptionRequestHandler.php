@@ -8,10 +8,26 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use League\Plates\Engine;
 
-use Zend\Diactoros\Response\HtmlResponse;
-
 class SimpleHtmlExceptionRequestHandler implements RequestHandlerInterface
 {
+    /**
+     * The response prototype.
+     *
+     * @var \Psr\Http\Message\ResponseInterface
+     */
+    private $prototype;
+
+    /**
+     * Set up a simple html exception request handler with the given response
+     * prototype.
+     *
+     * @param \Psr\Http\Message\ResponseInterface $prototype
+     */
+    public function __construct(ResponseInterface $prototype)
+    {
+        $this->prototype = $prototype;
+    }
+
     /**
      * Return a simple html response for the exception.
      *
@@ -24,8 +40,12 @@ class SimpleHtmlExceptionRequestHandler implements RequestHandlerInterface
 
         $engine = new Engine($path);
 
-        $html = $engine->render('simple');
+        $contents = $engine->render('simple');
 
-        return new HtmlResponse($html, 500);
+        $this->prototype->getBody()->write($contents);
+
+        return $this->prototype
+            ->withStatus(500)
+            ->withHeader('Content-type', 'text/html');
     }
 }

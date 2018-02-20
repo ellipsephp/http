@@ -5,6 +5,8 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Zend\Diactoros\Response;
+
 use Ellipse\Http\Handlers\DetailledJsonExceptionRequestHandler;
 
 describe('DetailledJsonExceptionRequestHandler', function () {
@@ -13,7 +15,7 @@ describe('DetailledJsonExceptionRequestHandler', function () {
 
         $this->exception = mock(Throwable::class)->get();
 
-        $this->handler = new DetailledJsonExceptionRequestHandler($this->exception);
+        $this->handler = new DetailledJsonExceptionRequestHandler($this->exception, new Response);
 
     });
 

@@ -5,6 +5,8 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Zend\Diactoros\Response;
+
 use Ellipse\Http\Exceptions\Inspector;
 use Ellipse\Http\Handlers\DetailledHtmlExceptionRequestHandler;
 
@@ -14,7 +16,7 @@ describe('DetailledHtmlExceptionRequestHandler', function () {
 
         $this->exception = mock(Throwable::class)->get();
 
-        $this->handler = new DetailledHtmlExceptionRequestHandler($this->exception);
+        $this->handler = new DetailledHtmlExceptionRequestHandler($this->exception, new Response);
 
     });
 

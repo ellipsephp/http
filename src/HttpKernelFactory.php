@@ -35,19 +35,20 @@ class HttpKernelFactory
      * http kernel with boot failure wrapped around it so a http kernel is
      * always returned.
      *
-     * @param string    $env
-     * @param bool      $debug
+     * @param \Psr\Http\Message\ResponseInterface   $prototype
+     * @param string                                $env
+     * @param bool                                  $debug
      * @return \Ellipse\Http\HttpKernel
      */
-    public function __invoke(string $env, bool $debug): HttpKernel
+    public function __invoke(ResponseInterface $prototype, string $env, bool $debug): HttpKernel
     {
         try {
 
-            $kernel = ($this->bootstrap)($env, $debug);
+            $kernel = ($this->bootstrap)($prototype, $env, $debug);
 
             if ($kernel instanceof RequestHandlerInterface) {
 
-                return new HttpKernelWithoutBootFailure($kernel, $debug);
+                return new HttpKernelWithoutBootFailure($kernel, $prototype, $debug);
 
             }
 
@@ -57,7 +58,7 @@ class HttpKernelFactory
 
         catch (Throwable $e) {
 
-            return new HttpKernelWithBootFailure($e, $debug);
+            return new HttpKernelWithBootFailure($e, $prototype, $debug);
 
         }
     }

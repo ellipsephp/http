@@ -6,6 +6,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Zend\Diactoros\Response;
+
 use Ellipse\Http\HttpKernel;
 
 describe('HttpKernel', function () {
@@ -13,12 +15,13 @@ describe('HttpKernel', function () {
     beforeEach(function () {
 
         $this->handler = mock(RequestHandlerInterface::class);
+        $this->prototype = new Response;
 
     });
 
     it('should implement RequestHandlerInterface', function () {
 
-        $test = new HttpKernel($this->handler->get(), false);
+        $test = new HttpKernel($this->handler->get(), $this->prototype, false);
 
         expect($test)->toBeAnInstanceOf(RequestHandlerInterface::class);
 
@@ -36,7 +39,7 @@ describe('HttpKernel', function () {
 
             beforeEach(function () {
 
-                $this->kernel = new HttpKernel($this->handler->get(), false);
+                $this->kernel = new HttpKernel($this->handler->get(), $this->prototype, false);
 
             });
 
@@ -132,7 +135,7 @@ describe('HttpKernel', function () {
 
             beforeEach(function () {
 
-                $this->kernel = new HttpKernel($this->handler->get(), true);
+                $this->kernel = new HttpKernel($this->handler->get(), $this->prototype, true);
 
             });
 

@@ -2,7 +2,11 @@
 
 use function Eloquent\Phony\Kahlan\mock;
 
+use Psr\Http\Message\ResponseInterface;
+
 use Negotiation\Negotiator;
+
+use Zend\Diactoros\Response;
 
 use Ellipse\Http\Handlers\ExceptionRequestHandler;
 use Ellipse\Http\Handlers\ExceptionRequestHandlerFactory;
@@ -13,6 +17,7 @@ describe('ExceptionRequestHandlerFactory', function () {
 
         $this->exception = mock(Throwable::class)->get();
         $this->negotiator = new Negotiator;
+        $this->prototype = new Response;
 
     });
 
@@ -22,11 +27,11 @@ describe('ExceptionRequestHandlerFactory', function () {
 
             it('should return an exception request handler with debug value set to false', function () {
 
-                $factory = new ExceptionRequestHandlerFactory(false);
+                $factory = new ExceptionRequestHandlerFactory($this->prototype, false);
 
                 $test = $factory($this->exception);
 
-                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, false);
+                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, $this->prototype, false);
 
                 expect($test)->toEqual($handler);
 
@@ -38,11 +43,11 @@ describe('ExceptionRequestHandlerFactory', function () {
 
             it('should return an exception request handler with debug value set to true', function () {
 
-                $factory = new ExceptionRequestHandlerFactory(true);
+                $factory = new ExceptionRequestHandlerFactory($this->prototype, true);
 
                 $test = $factory($this->exception);
 
-                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, true);
+                $handler = new ExceptionRequestHandler($this->exception, $this->negotiator, $this->prototype, true);
 
                 expect($test)->toEqual($handler);
 

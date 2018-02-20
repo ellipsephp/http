@@ -4,10 +4,19 @@ namespace Ellipse\Http\Handlers;
 
 use Throwable;
 
+use Psr\Http\Message\ResponseInterface;
+
 use Negotiation\Negotiator;
 
 class ExceptionRequestHandlerFactory
 {
+    /**
+     * The response prototype.
+     *
+     * @var \Psr\Http\Message\ResponseInterface
+     */
+    private $prototype;
+
     /**
      * Whether the application is in debug mode or not.
      *
@@ -16,12 +25,15 @@ class ExceptionRequestHandlerFactory
     private $debug;
 
     /**
-     * Set up an exeception request handler factory with the given debug status.
+     * Set up an exeception request handler factory with the given response
+     * prototype and debug status.
      *
-     * @param bool $debug
+     * @param \Psr\Http\Message\ResponseInterface   $prototype
+     * @param bool                                  $debug
      */
-    public function __construct(bool $debug)
+    public function __construct(ResponseInterface $prototype, bool $debug)
     {
+        $this->prototype = $prototype;
         $this->debug = $debug;
     }
 
@@ -36,6 +48,6 @@ class ExceptionRequestHandlerFactory
     {
         $negotiator = new Negotiator;
 
-        return new ExceptionRequestHandler($e, $negotiator, $this->debug);
+        return new ExceptionRequestHandler($e, $negotiator, $this->prototype, $this->debug);
     }
 }

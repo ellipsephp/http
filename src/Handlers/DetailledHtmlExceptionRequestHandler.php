@@ -10,8 +10,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use League\Plates\Engine;
 
-use Zend\Diactoros\Response\HtmlResponse;
-
 use Ellipse\Http\Exceptions\Inspector;
 
 class DetailledHtmlExceptionRequestHandler implements RequestHandlerInterface
@@ -24,14 +22,23 @@ class DetailledHtmlExceptionRequestHandler implements RequestHandlerInterface
     private $e;
 
     /**
-     * Set up a detailled html exception request handler with the given
-     * exception.
+     * The response prototype.
      *
-     * @param \Throwable $e
+     * @var \Psr\Http\Message\ResponseInterface
      */
-    public function __construct(Throwable $e)
+    private $prototype;
+
+    /**
+     * Set up a detailled html exception request handler with the given
+     * exception and response prototype.
+     *
+     * @param \Throwable                            $e
+     * @param \Psr\Http\Message\ResponseInterface   $prototype
+     */
+    public function __construct(Throwable $e, ResponseInterface $prototype)
     {
         $this->e = $e;
+        $this->prototype = $prototype;
     }
 
     /**
@@ -46,10 +53,14 @@ class DetailledHtmlExceptionRequestHandler implements RequestHandlerInterface
 
         $engine = new Engine($path);
 
-        $html = $engine->render('detailled', [
+        $contents = $engine->render('detailled', [
             'details' => new Inspector($this->e),
         ]);
 
-        return new HtmlResponse($html, 500);
+        $this->prototype->getBody()->write($contents);
+
+        return $this->prototype
+            ->withStatus(500)
+            ->withHeader('Content-type', 'text/html');
     }
 }

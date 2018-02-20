@@ -6,6 +6,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Zend\Diactoros\Response;
+
 use Ellipse\Http\HttpKernel;
 use Ellipse\Http\HttpKernelWithoutBootFailure;
 use Ellipse\Http\Exceptions\HttpException;
@@ -15,12 +17,13 @@ describe('HttpKernelWithoutBootFailure', function () {
     beforeEach(function () {
 
         $this->handler = mock(RequestHandlerInterface::class);
+        $this->prototype = new Response;
 
     });
 
     it('should extend HttpKernel', function () {
 
-        $test = new HttpKernelWithoutBootFailure($this->handler->get(), false);
+        $test = new HttpKernelWithoutBootFailure($this->handler->get(), $this->prototype, false);
 
         expect($test)->toBeAnInstanceOf(HttpKernel::class);
 
@@ -38,7 +41,7 @@ describe('HttpKernelWithoutBootFailure', function () {
 
             beforeEach(function () {
 
-                $this->kernel = new HttpKernelWithoutBootFailure($this->handler->get(), true);
+                $this->kernel = new HttpKernelWithoutBootFailure($this->handler->get(), $this->prototype, true);
 
             });
 

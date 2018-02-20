@@ -3,10 +3,11 @@
 use function Eloquent\Phony\Kahlan\mock;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
 use Negotiation\Negotiator;
+
+use Zend\Diactoros\Response;
 
 use Ellipse\Http\Handlers\ExceptionRequestHandler;
 use Ellipse\Http\Handlers\RequestBasedRequestHandler;
@@ -22,7 +23,7 @@ describe('ExceptionRequestHandler', function () {
 
     it('should extend RequestBasedRequestHandler', function () {
 
-        $test = new ExceptionRequestHandler($this->exception, $this->negotiator, false);
+        $test = new ExceptionRequestHandler($this->exception, $this->negotiator, new Response, false);
 
         expect($test)->toBeAnInstanceOf(RequestBasedRequestHandler::class);
 
@@ -40,7 +41,7 @@ describe('ExceptionRequestHandler', function () {
 
             beforeEach(function () {
 
-                $this->handler = new ExceptionRequestHandler($this->exception, $this->negotiator, false);
+                $this->handler = new ExceptionRequestHandler($this->exception, $this->negotiator, new Response, false);
 
             });
 
@@ -108,7 +109,7 @@ describe('ExceptionRequestHandler', function () {
 
             beforeEach(function () {
 
-                $this->handler = new ExceptionRequestHandler($this->exception, $this->negotiator, true);
+                $this->handler = new ExceptionRequestHandler($this->exception, $this->negotiator, new Response, true);
 
             });
 

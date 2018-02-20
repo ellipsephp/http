@@ -5,6 +5,8 @@ use function Eloquent\Phony\Kahlan\mock;
 
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Zend\Diactoros\Response;
+
 use Ellipse\Http\HttpKernelFactory;
 use Ellipse\Http\HttpKernelWithoutBootFailure;
 use Ellipse\Http\HttpKernelWithBootFailure;
@@ -15,6 +17,7 @@ describe('HttpKernelFactory', function () {
     beforeEach(function () {
 
         $this->bootstrap = stub();
+        $this->prototype = new Response;
 
         $this->factory = new HttpKernelFactory($this->bootstrap);
 
@@ -32,11 +35,11 @@ describe('HttpKernelFactory', function () {
 
                         $handler = mock(RequestHandlerInterface::class)->get();
 
-                        $this->bootstrap->with('env', true)->returns($handler);
+                        $this->bootstrap->with($this->prototype, 'env', true)->returns($handler);
 
-                        $test = ($this->factory)('env', true);
+                        $test = ($this->factory)($this->prototype, 'env', true);
 
-                        $kernel = new HttpKernelWithoutBootFailure($handler, true);
+                        $kernel = new HttpKernelWithoutBootFailure($handler, $this->prototype, true);
 
                         expect($test)->toEqual($kernel);
 
@@ -50,11 +53,11 @@ describe('HttpKernelFactory', function () {
 
                         $handler = mock(RequestHandlerInterface::class)->get();
 
-                        $this->bootstrap->with('env', false)->returns($handler);
+                        $this->bootstrap->with($this->prototype, 'env', false)->returns($handler);
 
-                        $test = ($this->factory)('env', false);
+                        $test = ($this->factory)($this->prototype, 'env', false);
 
-                        $kernel = new HttpKernelWithoutBootFailure($handler, false);
+                        $kernel = new HttpKernelWithoutBootFailure($handler, $this->prototype, false);
 
                         expect($test)->toEqual($kernel);
 
@@ -78,11 +81,11 @@ describe('HttpKernelFactory', function () {
 
                     it('should return a http kernel with boot failure with a HttpKernelTypeException and the debug value set to true', function () {
 
-                        $this->bootstrap->with('env', true)->returns('handler');
+                        $this->bootstrap->with($this->prototype, 'env', true)->returns('handler');
 
-                        $test = ($this->factory)('env', true);
+                        $test = ($this->factory)($this->prototype, 'env', true);
 
-                        $kernel = new HttpKernelWithBootFailure($this->exception, true);
+                        $kernel = new HttpKernelWithBootFailure($this->exception, $this->prototype, true);
 
                         expect($test)->toEqual($kernel);
 
@@ -94,11 +97,11 @@ describe('HttpKernelFactory', function () {
 
                     it('should return a http kernel with boot failure with a HttpKernelTypeException and the debug value set to false', function () {
 
-                        $this->bootstrap->with('env', false)->returns('handler');
+                        $this->bootstrap->with($this->prototype, 'env', false)->returns('handler');
 
-                        $test = ($this->factory)('env', false);
+                        $test = ($this->factory)($this->prototype, 'env', false);
 
-                        $kernel = new HttpKernelWithBootFailure($this->exception, false);
+                        $kernel = new HttpKernelWithBootFailure($this->exception, $this->prototype, false);
 
                         expect($test)->toEqual($kernel);
 
@@ -118,11 +121,11 @@ describe('HttpKernelFactory', function () {
 
                     $exception = mock(Throwable::class)->get();
 
-                    $this->bootstrap->with('env', true)->throws($exception);
+                    $this->bootstrap->with($this->prototype, 'env', true)->throws($exception);
 
-                    $test = ($this->factory)('env', true);
+                    $test = ($this->factory)($this->prototype, 'env', true);
 
-                    $kernel = new HttpKernelWithBootFailure($exception, true);
+                    $kernel = new HttpKernelWithBootFailure($exception, $this->prototype, true);
 
                     expect($test)->toBeAnInstanceOf(HttpKernelWithBootFailure::class);
 
@@ -136,11 +139,11 @@ describe('HttpKernelFactory', function () {
 
                     $exception = mock(Throwable::class)->get();
 
-                    $this->bootstrap->with('env', false)->throws($exception);
+                    $this->bootstrap->with($this->prototype, 'env', false)->throws($exception);
 
-                    $test = ($this->factory)('env', false);
+                    $test = ($this->factory)($this->prototype, 'env', false);
 
-                    $kernel = new HttpKernelWithBootFailure($exception, false);
+                    $kernel = new HttpKernelWithBootFailure($exception, $this->prototype, false);
 
                     expect($test)->toEqual($kernel);
 

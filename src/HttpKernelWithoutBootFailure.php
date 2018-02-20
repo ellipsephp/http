@@ -5,8 +5,7 @@ namespace Ellipse\Http;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Dispatcher\RequestHandlerWithMiddlewareStack;
-use Ellipse\Http\Middleware\HttpExceptionMiddleware;
+use Ellipse\Http\Handlers\RequestHandlerWithoutBootFailure;
 
 class HttpKernelWithoutBootFailure extends HttpKernel
 {
@@ -20,8 +19,6 @@ class HttpKernelWithoutBootFailure extends HttpKernel
      */
     public function __construct(RequestHandlerInterface $handler, ResponseInterface $prototype, bool $debug)
     {
-        parent::__construct(new RequestHandlerWithMiddlewareStack($handler, [
-            new HttpExceptionMiddleware,
-        ]), $prototype, $debug);
+        parent::__construct(new RequestHandlerWithoutBootFailure($handler), $prototype, $debug);
     }
 }

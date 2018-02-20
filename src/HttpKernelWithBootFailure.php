@@ -6,7 +6,7 @@ use Throwable;
 
 use Psr\Http\Message\ResponseInterface;
 
-use Ellipse\Http\Handlers\BootExceptionRequestHandler;
+use Ellipse\Http\Handlers\RequestHandlerWithBootFailure;
 
 class HttpKernelWithBootFailure extends HttpKernel
 {
@@ -19,6 +19,6 @@ class HttpKernelWithBootFailure extends HttpKernel
      */
     public function __construct(Throwable $e, ResponseInterface $prototype, bool $debug)
     {
-        parent::__construct(new BootExceptionRequestHandler($e), $prototype, $debug);
+        parent::__construct(new RequestHandlerWithBootFailure($e), $prototype, $debug);
     }
 }

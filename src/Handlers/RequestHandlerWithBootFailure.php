@@ -10,7 +10,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Ellipse\Http\Exceptions\BootException;
 
-class BootExceptionRequestHandler implements RequestHandlerInterface
+class RequestHandlerWithBootFailure implements RequestHandlerInterface
 {
     /**
      * The exception thrown during booting.

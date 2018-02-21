@@ -41,14 +41,19 @@ class ExceptionHandler
     }
 
     /**
+     * Use the reponse factory to produce a response and send it.
      *
+     * @param \Throwable $e
+     * @return bool
      */
-    public function __invoke(Throwable $e)
+    public function __invoke(Throwable $e): bool
     {
         $e = new UncaughtException($e);
 
         $response = ($this->factory)($e)->handle($this->request);
 
         send($response);
+
+        return true;
     }
 }

@@ -32,10 +32,7 @@ describe('DefaultErrorHandler', function () {
 
         beforeEach(function () {
 
-            $this->exception = null;
-            $this->shutdown = null;
-
-            allow('error_reporting')->toBeCalled()->andReturn(0);
+            allow('error_reporting')->toBeCalled()->andReturn(E_ALL);
 
             allow('set_exception_handler')->toBeCalled()->andRun(function ($handler) {
 
@@ -62,7 +59,7 @@ describe('DefaultErrorHandler', function () {
                 $factory = new ExceptionRequestHandlerFactory($this->prototype, false);
 
                 expect($this->exception)->toEqual(new ExceptionHandler($this->request, $factory));
-                expect($this->shutdown)->toEqual($test = new ShutdownHandler($this->request, $factory));
+                expect($this->shutdown)->toEqual(new ShutdownHandler($this->request, $factory));
 
             });
 
@@ -79,7 +76,7 @@ describe('DefaultErrorHandler', function () {
                 $factory = new ExceptionRequestHandlerFactory($this->prototype, true);
 
                 expect($this->exception)->toEqual(new ExceptionHandler($this->request, $factory));
-                expect($this->shutdown)->toEqual($test = new ShutdownHandler($this->request, $factory));
+                expect($this->shutdown)->toEqual(new ShutdownHandler($this->request, $factory));
 
             });
 

@@ -24,10 +24,7 @@ describe('ErrorHandler', function () {
 
         it('should register an ExceptionHandler and a ShutdownHandler using the request and the factory', function () {
 
-            $this->exception = null;
-            $this->shutdown = null;
-
-            allow('error_reporting')->toBeCalled()->andReturn(0);
+            allow('error_reporting')->toBeCalled()->andReturn(E_ALL);
 
             allow('set_exception_handler')->toBeCalled()->andRun(function ($handler) {
 

@@ -35,15 +35,14 @@ describe('ExceptionHandler', function () {
             $exception = new UncaughtException($this->exception);
             $handler = mock(RequestHandlerInterface::class);
             $response = new TextResponse('exception');
+            $this->headers = [];
 
             $this->factory->with($exception)->returns($handler);
             $handler->handle->with($this->request)->returns($response);
 
-            $headers = [];
+            allow('header')->toBeCalled()->andRun(function ($header) {
 
-            allow('header')->toBeCalled()->andRun(function ($header) use (&$headers) {
-
-                $headers[] = $header;
+                $this->headers[] = $header;
 
             });
 
@@ -53,8 +52,8 @@ describe('ExceptionHandler', function () {
 
             $sent = ob_get_clean();
 
-            expect($headers)->toContain('HTTP/1.1 200 OK');
-            expect($headers)->toContain('content-type: text/plain; charset=utf-8');
+            expect($this->headers)->toContain('HTTP/1.1 200 OK');
+            expect($this->headers)->toContain('content-type: text/plain; charset=utf-8');
             expect($sent)->toContain('exception');
 
         });

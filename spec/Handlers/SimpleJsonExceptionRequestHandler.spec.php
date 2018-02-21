@@ -5,7 +5,7 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Zend\Diactoros\Response;
+use Http\Factory\Diactoros\ResponseFactory;
 
 use Ellipse\Http\Handlers\SimpleJsonExceptionRequestHandler;
 
@@ -13,7 +13,7 @@ describe('SimpleJsonExceptionRequestHandler', function () {
 
     beforeEach(function () {
 
-        $this->handler = new SimpleJsonExceptionRequestHandler(new Response);
+        $this->handler = new SimpleJsonExceptionRequestHandler(new ResponseFactory);
 
     });
 

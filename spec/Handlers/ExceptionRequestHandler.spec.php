@@ -5,7 +5,7 @@ use function Eloquent\Phony\Kahlan\mock;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Zend\Diactoros\Response;
+use Http\Factory\Diactoros\ResponseFactory;;
 
 use Ellipse\Http\Handlers\ExceptionRequestHandler;
 use Ellipse\Http\Handlers\RequestBasedRequestHandler;
@@ -15,13 +15,13 @@ describe('ExceptionRequestHandler', function () {
     beforeEach(function () {
 
         $this->exception = mock(Throwable::class)->get();
-        $this->prototype = new Response;
+        $this->factory = new ResponseFactory;
 
     });
 
     it('should extend RequestBasedRequestHandler', function () {
 
-        $test = new ExceptionRequestHandler($this->exception, $this->prototype, false);
+        $test = new ExceptionRequestHandler($this->exception, $this->factory, false);
 
         expect($test)->toBeAnInstanceOf(RequestBasedRequestHandler::class);
 
@@ -39,7 +39,7 @@ describe('ExceptionRequestHandler', function () {
 
             beforeEach(function () {
 
-                $this->handler = new ExceptionRequestHandler($this->exception, $this->prototype, false);
+                $this->handler = new ExceptionRequestHandler($this->exception, $this->factory, false);
 
             });
 
@@ -107,7 +107,7 @@ describe('ExceptionRequestHandler', function () {
 
             beforeEach(function () {
 
-                $this->handler = new ExceptionRequestHandler($this->exception, $this->prototype, true);
+                $this->handler = new ExceptionRequestHandler($this->exception, $this->factory, true);
 
             });
 

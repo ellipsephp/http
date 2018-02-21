@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Zend\Diactoros\Response;
+use Http\Factory\Diactoros\ResponseFactory;
 
 use Ellipse\Http\HttpKernel;
 use Ellipse\Http\HttpKernelWithBootFailure;
@@ -17,13 +17,13 @@ describe('HttpKernelWithBootFailure', function () {
     beforeEach(function () {
 
         $this->exception = mock(Throwable::class)->get();
-        $this->prototype = new Response;
+        $this->factory = new ResponseFactory;
 
     });
 
     it('should extend HttpKernel', function () {
 
-        $test = new HttpKernelWithBootFailure($this->exception, $this->prototype, false);
+        $test = new HttpKernelWithBootFailure($this->exception, $this->factory, false);
 
         expect($test)->toBeAnInstanceOf(HttpKernel::class);
 
@@ -41,7 +41,7 @@ describe('HttpKernelWithBootFailure', function () {
 
             beforeEach(function () {
 
-                $this->kernel = new HttpKernelWithBootFailure($this->exception, $this->prototype, true);
+                $this->kernel = new HttpKernelWithBootFailure($this->exception, $this->factory, true);
 
             });
 

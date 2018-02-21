@@ -3,7 +3,8 @@
 use function Eloquent\Phony\Kahlan\mock;
 
 use Psr\Http\Message\ServerRequestInterface;
-use Psr\Http\Message\ResponseInterface;
+
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 use Ellipse\Http\Error\ErrorHandler;
 use Ellipse\Http\Error\ExceptionHandler;
@@ -16,13 +17,13 @@ describe('DefaultErrorHandler', function () {
     beforeEach(function () {
 
         $this->request = mock(ServerRequestInterface::class)->get();
-        $this->prototype = mock(ResponseInterface::class)->get();
+        $this->factory = mock(ResponseFactoryInterface::class)->get();
 
     });
 
     it('should extend ErrorHandler', function () {
 
-        $test = new DefaultErrorHandler($this->request, $this->prototype, false);
+        $test = new DefaultErrorHandler($this->request, $this->factory, false);
 
         expect($test)->toBeAnInstanceOf(ErrorHandler::class);
 
@@ -52,11 +53,11 @@ describe('DefaultErrorHandler', function () {
 
             it('should register handlers using the request and a default exception factory with debug mode set to false', function () {
 
-                $handler = new DefaultErrorHandler($this->request, $this->prototype, false);
+                $handler = new DefaultErrorHandler($this->request, $this->factory, false);
 
                 $handler->register();
 
-                $factory = new ExceptionRequestHandlerFactory($this->prototype, false);
+                $factory = new ExceptionRequestHandlerFactory($this->factory, false);
 
                 expect($this->exception)->toEqual(new ExceptionHandler($this->request, $factory));
                 expect($this->shutdown)->toEqual(new ShutdownHandler($this->request, $factory));
@@ -69,11 +70,11 @@ describe('DefaultErrorHandler', function () {
 
             it('should register handlers using the request and a default exception factory with debug mode set to true', function () {
 
-                $handler = new DefaultErrorHandler($this->request, $this->prototype, true);
+                $handler = new DefaultErrorHandler($this->request, $this->factory, true);
 
                 $handler->register();
 
-                $factory = new ExceptionRequestHandlerFactory($this->prototype, true);
+                $factory = new ExceptionRequestHandlerFactory($this->factory, true);
 
                 expect($this->exception)->toEqual(new ExceptionHandler($this->request, $factory));
                 expect($this->shutdown)->toEqual(new ShutdownHandler($this->request, $factory));

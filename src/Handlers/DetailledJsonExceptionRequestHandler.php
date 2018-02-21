@@ -8,6 +8,8 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Interop\Http\Factory\ResponseFactoryInterface;
+
 use Ellipse\Http\Exceptions\Inspector;
 
 class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
@@ -20,23 +22,23 @@ class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
     private $e;
 
     /**
-     * The response prototype.
+     * The response factory.
      *
-     * @var \Psr\Http\Message\ResponseInterface
+     * @var \Interop\Http\Factory\ResponseFactoryInterface
      */
-    private $prototype;
+    private $factory;
 
     /**
      * Set up a detailled json exception request handler with the given
-     * exception and response prototype.
+     * exception and response factory.
      *
-     * @param \Throwable                            $e
-     * @param \Psr\Http\Message\ResponseInterface   $prototype
+     * @param \Throwable                                        $e
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
      */
-    public function __construct(Throwable $e, ResponseInterface $prototype)
+    public function __construct(Throwable $e, ResponseFactoryInterface $factory)
     {
         $this->e = $e;
-        $this->prototype = $prototype;
+        $this->factory = $factory;
     }
 
     /**
@@ -59,10 +61,12 @@ class DetailledJsonExceptionRequestHandler implements RequestHandlerInterface
             'trace' => $details->inner()->getTrace(),
         ]);
 
-        $this->prototype->getBody()->write($contents);
-
-        return $this->prototype
-            ->withStatus(500)
+        $response = $this->factory
+            ->createResponse(500)
             ->withHeader('Content-type', 'application/json');
+
+        $response->getBody()->write($contents);
+
+        return $response;
     }
 }

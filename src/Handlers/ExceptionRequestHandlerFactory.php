@@ -4,16 +4,16 @@ namespace Ellipse\Http\Handlers;
 
 use Throwable;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 class ExceptionRequestHandlerFactory
 {
     /**
-     * The response prototype.
+     * The response factory.
      *
-     * @var \Psr\Http\Message\ResponseInterface
+     * @var \Interop\Http\Factory\ResponseFactoryInterface
      */
-    private $prototype;
+    private $factory;
 
     /**
      * Whether the application is in debug mode or not.
@@ -24,14 +24,14 @@ class ExceptionRequestHandlerFactory
 
     /**
      * Set up an exeception request handler factory with the given response
-     * prototype and debug mode.
+     * factory and debug mode.
      *
-     * @param \Psr\Http\Message\ResponseInterface   $prototype
-     * @param bool                                  $debug
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
+     * @param bool                                              $debug
      */
-    public function __construct(ResponseInterface $prototype, bool $debug)
+    public function __construct(ResponseFactoryInterface $factory, bool $debug)
     {
-        $this->prototype = $prototype;
+        $this->factory = $factory;
         $this->debug = $debug;
     }
 
@@ -44,6 +44,6 @@ class ExceptionRequestHandlerFactory
      */
     public function __invoke(Throwable $e): ExceptionRequestHandler
     {
-        return new ExceptionRequestHandler($e, $this->prototype, $this->debug);
+        return new ExceptionRequestHandler($e, $this->factory, $this->debug);
     }
 }

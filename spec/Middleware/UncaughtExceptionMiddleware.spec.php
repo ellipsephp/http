@@ -6,7 +6,7 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Zend\Diactoros\Response;
+use Http\Factory\Diactoros\ResponseFactory;
 
 use Ellipse\Exceptions\ExceptionHandlerMiddleware;
 use Ellipse\Http\Middleware\UncaughtExceptionMiddleware;
@@ -15,13 +15,13 @@ describe('UncaughtExceptionMiddleware', function () {
 
     beforeEach(function () {
 
-        $this->prototype = new Response;
+        $this->factory = new ResponseFactory;
 
     });
 
     it('should extend ExceptionHandlerMiddleware', function () {
 
-        $test = new UncaughtExceptionMiddleware($this->prototype, false);
+        $test = new UncaughtExceptionMiddleware($this->factory, false);
 
         expect($test)->toBeAnInstanceOf(ExceptionHandlerMiddleware::class);
 
@@ -40,7 +40,7 @@ describe('UncaughtExceptionMiddleware', function () {
 
             beforeEach(function () {
 
-                $this->middleware = new UncaughtExceptionMiddleware($this->prototype, false);
+                $this->middleware = new UncaughtExceptionMiddleware($this->factory, false);
 
             });
 
@@ -136,7 +136,7 @@ describe('UncaughtExceptionMiddleware', function () {
 
             beforeEach(function () {
 
-                $this->middleware = new UncaughtExceptionMiddleware($this->prototype, true);
+                $this->middleware = new UncaughtExceptionMiddleware($this->factory, true);
 
             });
 

@@ -4,7 +4,7 @@ namespace Ellipse\Http;
 
 use Throwable;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 use Ellipse\Http\Handlers\RequestHandlerWithBootFailure;
 
@@ -13,12 +13,12 @@ class HttpKernelWithBootFailure extends HttpKernel
     /**
      * Set up a http kernel with a request handler with boot failure.
      *
-     * @param \Throwable                            $e
-     * @param \Psr\Http\Message\ResponseInterface   $prototype
-     * @param bool                                  $debug
+     * @param \Throwable                                        $e
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
+     * @param bool                                              $debug
      */
-    public function __construct(Throwable $e, ResponseInterface $prototype, bool $debug)
+    public function __construct(Throwable $e, ResponseFactoryInterface $factory, bool $debug)
     {
-        parent::__construct(new RequestHandlerWithBootFailure($e), $prototype, $debug);
+        parent::__construct(new RequestHandlerWithBootFailure($e), $factory, $debug);
     }
 }

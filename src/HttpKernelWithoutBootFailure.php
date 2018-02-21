@@ -2,8 +2,9 @@
 
 namespace Ellipse\Http;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 use Ellipse\Http\Handlers\RequestHandlerWithoutBootFailure;
 
@@ -12,12 +13,12 @@ class HttpKernelWithoutBootFailure extends HttpKernel
     /**
      * Set up a http kernel with a request handler without boot failure.
      *
-     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
-     * @param \Psr\Http\Message\ResponseInterface       $prototype
-     * @param bool                                      $debug
+     * @param \Psr\Http\Server\RequestHandlerInterface          $handler
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
+     * @param bool                                              $debug
      */
-    public function __construct(RequestHandlerInterface $handler, ResponseInterface $prototype, bool $debug)
+    public function __construct(RequestHandlerInterface $handler, ResponseFactoryInterface $factory, bool $debug)
     {
-        parent::__construct(new RequestHandlerWithoutBootFailure($handler), $prototype, $debug);
+        parent::__construct(new RequestHandlerWithoutBootFailure($handler), $factory, $debug);
     }
 }

@@ -6,26 +6,28 @@ use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 
+use Interop\Http\Factory\ResponseFactoryInterface;
+
 use League\Plates\Engine;
 
 class SimpleHtmlExceptionRequestHandler implements RequestHandlerInterface
 {
     /**
-     * The response prototype.
+     * The response factory.
      *
-     * @var \Psr\Http\Message\ResponseInterface
+     * @var \Interop\Http\Factory\ResponseFactoryInterface
      */
-    private $prototype;
+    private $factory;
 
     /**
      * Set up a simple html exception request handler with the given response
-     * prototype.
+     * factory.
      *
-     * @param \Psr\Http\Message\ResponseInterface $prototype
+     * @param \Interop\Http\Factory\ResponseFactoryInterface $factory
      */
-    public function __construct(ResponseInterface $prototype)
+    public function __construct(ResponseFactoryInterface $factory)
     {
-        $this->prototype = $prototype;
+        $this->factory = $factory;
     }
 
     /**
@@ -42,10 +44,12 @@ class SimpleHtmlExceptionRequestHandler implements RequestHandlerInterface
 
         $contents = $engine->render('simple');
 
-        $this->prototype->getBody()->write($contents);
-
-        return $this->prototype
-            ->withStatus(500)
+        $response = $this->factory
+            ->createResponse(500)
             ->withHeader('Content-type', 'text/html');
+
+        $response->getBody()->write($contents);
+
+        return $response;
     }
 }

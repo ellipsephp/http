@@ -2,8 +2,9 @@
 
 namespace Ellipse\Http;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 use Ellipse\Dispatcher\RequestHandlerWithMiddlewareStack;
 use Ellipse\Http\Middleware\UncaughtExceptionMiddleware;
@@ -12,15 +13,15 @@ class HttpKernel extends RequestHandlerWithMiddlewareStack
 {
     /**
      * Set up a http kernel with the given request handler wrapped inside an
-     * uncaught exception middleware, using the given response prototype and
-     * debug mode.
+     * uncaught exception middleware, using the given response factory and debug
+     * mode.
      *
-     * @param \Psr\Http\Server\RequestHandlerInterface  $handler
-     * @param \Psr\Http\Message\ResponseInterface       $prototype
-     * @param bool                                      $debug
+     * @param \Psr\Http\Server\RequestHandlerInterface          $handler
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
+     * @param bool                                              $debug
      */
-    public function __construct(RequestHandlerInterface $handler, ResponseInterface $prototype, bool $debug)
+    public function __construct(RequestHandlerInterface $handler, ResponseFactoryInterface $factory, bool $debug)
     {
-        parent::__construct($handler, [new UncaughtExceptionMiddleware($prototype, $debug)]);
+        parent::__construct($handler, [new UncaughtExceptionMiddleware($factory, $debug)]);
     }
 }

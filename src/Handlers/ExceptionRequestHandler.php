@@ -4,27 +4,27 @@ namespace Ellipse\Http\Handlers;
 
 use Throwable;
 
-use Psr\Http\Message\ResponseInterface;
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 class ExceptionRequestHandler extends RequestBasedRequestHandler
 {
     /**
      * Set up an exception request handler with the given exception, response
-     * prototype and debug mode.
+     * factory and debug mode.
      *
-     * @param \Throwable                            $e
-     * @param \Psr\Http\Message\ResponseInterface   $prototype
-     * @param bool                                  $debug
+     * @param \Throwable                                        $e
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
+     * @param bool                                              $debug
      */
-    public function __construct(Throwable $e, ResponseInterface $prototype, bool $debug)
+    public function __construct(Throwable $e, ResponseFactoryInterface $factory, bool $debug)
     {
         parent::__construct([
             'text/html' => $debug
-                ? new DetailledHtmlExceptionRequestHandler($e, $prototype)
-                : new SimpleHtmlExceptionRequestHandler($prototype),
+                ? new DetailledHtmlExceptionRequestHandler($e, $factory)
+                : new SimpleHtmlExceptionRequestHandler($factory),
             'application/json' => $debug
-                ? new DetailledJsonExceptionRequestHandler($e, $prototype)
-                : new SimpleJsonExceptionRequestHandler($prototype),
+                ? new DetailledJsonExceptionRequestHandler($e, $factory)
+                : new SimpleJsonExceptionRequestHandler($factory),
         ]);
     }
 }

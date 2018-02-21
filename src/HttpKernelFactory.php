@@ -4,8 +4,9 @@ namespace Ellipse\Http;
 
 use Throwable;
 
-use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+
+use Interop\Http\Factory\ResponseFactoryInterface;
 
 use Ellipse\Http\Exceptions\HttpKernelTypeException;
 
@@ -34,20 +35,20 @@ class HttpKernelFactory
      * http kernel with boot failure wrapped around it so a http kernel is
      * always returned.
      *
-     * @param \Psr\Http\Message\ResponseInterface   $prototype
-     * @param string                                $env
-     * @param bool                                  $debug
+     * @param \Interop\Http\Factory\ResponseFactoryInterface    $factory
+     * @param string                                            $env
+     * @param bool                                              $debug
      * @return \Ellipse\Http\HttpKernel
      */
-    public function __invoke(ResponseInterface $prototype, string $env, bool $debug): HttpKernel
+    public function __invoke(ResponseFactoryInterface $factory, string $env, bool $debug): HttpKernel
     {
         try {
 
-            $handler = ($this->bootstrap)($prototype, $env, $debug);
+            $handler = ($this->bootstrap)($factory, $env, $debug);
 
             if ($handler instanceof RequestHandlerInterface) {
 
-                return new HttpKernelWithoutBootFailure($handler, $prototype, $debug);
+                return new HttpKernelWithoutBootFailure($handler, $factory, $debug);
 
             }
 
@@ -57,7 +58,7 @@ class HttpKernelFactory
 
         catch (Throwable $e) {
 
-            return new HttpKernelWithBootFailure($e, $prototype, $debug);
+            return new HttpKernelWithBootFailure($e, $factory, $debug);
 
         }
     }

@@ -4,7 +4,7 @@ namespace Ellipse\Http\Handlers;
 
 use Psr\Http\Server\RequestHandlerInterface;
 
-use Ellipse\Dispatcher\RequestHandlerWithMiddlewareStack;
+use Ellipse\Handlers\RequestHandlerWithMiddlewareStack;
 use Ellipse\Http\Middleware\HttpExceptionMiddleware;
 
 class RequestHandlerWithoutBootFailure extends RequestHandlerWithMiddlewareStack

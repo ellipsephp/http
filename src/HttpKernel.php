@@ -6,7 +6,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 use Interop\Http\Factory\ResponseFactoryInterface;
 
-use Ellipse\Dispatcher\RequestHandlerWithMiddlewareStack;
+use Ellipse\Handlers\RequestHandlerWithMiddlewareStack;
 use Ellipse\Http\Middleware\UncaughtExceptionMiddleware;
 
 class HttpKernel extends RequestHandlerWithMiddlewareStack

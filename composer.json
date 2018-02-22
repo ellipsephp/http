@@ -29,8 +29,8 @@
         "http-interop/response-sender": "^1.0",
         "willdurand/negotiation": "^2.3",
         "league/plates": "^3.3",
-        "ellipse/dispatcher": "^1.2",
-        "ellipse/exceptions": "^0.3.0"
+        "ellipse/handlers": "^1.0",
+        "ellipse/exceptions": "^0.3"
     },
     "require-dev": {
         "kahlan/kahlan": "^4.0",

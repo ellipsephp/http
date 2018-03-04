@@ -46,7 +46,7 @@ class ExceptionHandler
      * @param \Throwable $e
      * @return void
      */
-    public function __invoke(Throwable $e): void
+    public function __invoke(Throwable $e)
     {
         $e = new UncaughtException($e);
 

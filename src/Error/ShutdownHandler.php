@@ -65,7 +65,7 @@ class ShutdownHandler
      *
      * @return void
      */
-    public function __invoke(): void
+    public function __invoke()
     {
         $error = error_get_last();
 

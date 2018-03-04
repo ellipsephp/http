@@ -39,7 +39,7 @@ class ErrorHandler
      *
      * @return void
      */
-    public function register(): void
+    public function register()
     {
         set_exception_handler(new ExceptionHandler($this->request, $this->factory));
         register_shutdown_function(new ShutdownHandler($this->request, $this->factory));
